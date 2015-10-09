@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon.png</file>
+        <file>rotateleft.png</file>
+        <file>rotateright.png</file>
+        <file>zoomin.png</file>
+        <file>zoomout.png</file>
+        <file>help/data_entry.html</file>
+        <file>help/process_new_images.html</file>
+        <file>help/start_screen.html</file>
+        <file>help/overview.html</file>
+        <file>help/about.html</file>
+        <file>noimage.jpg</file>
+        <file>help/view_edit_existing.html</file>
+        <file>icon.ico</file>
+        <file>help/manage_csvs.html</file>
+        <file>help/generate_website.html</file>
+    </qresource>
+</RCC>

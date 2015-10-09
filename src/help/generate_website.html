@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Bioimages Collection Manager - Generate Website</title>
+  </head>
+  <body>
+    <div class="yui-t7" id="doc3">
+      <div id="hd">
+        <h2>Generate Website</h2>
+      </div>
+      <div id="bd"></div>
+      <div id="ft">
+        <p>This screen provides advanced features that primarily only the website
+        administrator for Bioimages will have use for.</p>
+        <h3>Resize images</h3>
+        <p>A function is provided to resize the full-size images down to the
+          various resolutions used on the Bioimages website. When resized to
+          thumbnails (tn) the larger image dimension is scaled down to 100 pixels,
+          low quality (lq) images are scaled down to 480 pixels, and good quality
+          (gq) images down to 1024 pixels.</p>
+          <p>The namespace is the name of the folder that the images will reside in on the
+          Bioimages server. Typically it is the agent ID of the photographer or their
+          organization's ID. When images are resized they will be saved to the following
+          folders: &lt;base_output_directory&gt;/tn/&lt;namespace&gt;/,
+          &lt;base_output_directory&gt;/lq/&lt;namespace&gt;/, and
+          &lt;base_output_directory&gt;/gq/&lt;namespace&gt;/.</p>
+        <h3>Generate Bioimages website</h3>
+        <p>Generation of the website from the metadata records is now
+          handled by XQuery scripts available at <a href="https://github.com/baskaufs/Bioimages">
+          https://github.com/baskaufs/Bioimages</a>.</p>
+      </div>
+    </div>
+  </body>
+</html>

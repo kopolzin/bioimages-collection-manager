@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Bioimages Collection Manager - Data Entry</title>
+  </head>
+  <body>
+    <div class="yui-t7" id="doc3">
+      <div id="hd">
+        <h2>Data Entry</h2>
+        <h3>Screen layout</h3>
+        <p>This screen is where all of the image information is entered. The
+          upper-right box contains thumbnails of all images you selected on the
+          <em>Process New Images</em> or <em>View/Edit Existing</em> screen.
+          The upper-left box contains a large view of the thumbnail you have
+          selected. All other boxes are fields to enter information about the
+          selected images, the organisms those images represent, and the
+          determinations of those organisms.</p>
+        <p>The lower-left and lower-right sections (below the large view and
+          below the thumbnail view, respectively) contain input fields for data
+          corresponding to images. This means that every JPEG image, which is
+          represented by a thumbnail, has its own distinct copy of these fields.</p>
+        <p>The center column contains input fields for organisms and determinations
+          which are labeled as such. An organism is a particular specimen, say the
+          cherry tree in my front yard. If I take fifteen pictures of that tree
+          they are all representing a single organism. Once I group those thumbnails
+          and assign a unique ID to the organism I only have to enter the organism's
+          metadata once, not fifteen times (once per picture).</p>
+        <p>Determinations are similar in that they refer to identifications of
+          a specific organism and do not need to be entered for every image.</p>
+        <h3>General data entry procedure</h3>
+        <p>The general procedure is to select one or more image thumbnail and
+          enter information about the selected image(s). To speed up data entry,
+          selecting multiple thumbnails is advisable. The logical unit is an
+          organism--multiple images taken of a single organism will contain
+          nearly all of the same data so it speeds things up to select all of
+          them and only enter the data once. As a way to assist with this when
+          a thumbnail is selected all other thumbnails from the same organism are
+          given an orange border to help identify them. Following is an example
+          procedure to input data about images.</p>
+        <h3>Example procedure:</h3>
+        <p>1. In the upper-right corner of the screen select all thumbnails taken
+          of an individual organism.</p>
+        <p>2. Click the <em>Group selected thumbnails as an individual organism</em>
+          button to give this organism a unique ID. This lets others easily know
+          that all of these images were taken of the same organism. When you make
+          changes to the input fields, the changes are automatically saved. This
+          means that the <em>Organism ID</em> field is now automatically saved for
+          the images you have selected after you clicked the <em>Group</em> button.</p>
+        <p>3. Fill out the data fields that are exactly the same for all of the
+          selected images. Many times cameras do not correctly save the time zone
+          in the Exif data so that is a good one to highlight all images and set
+          at once. The timezone must be in the format of '±hh:mm' with either the
+          minus sign or the plus sign.</p>
+        <p>Once you have finished entering the image metadata that are the same for
+          the selected images you may want to enter organism metadata. If you are
+          just changing a single organism's data there is no need to have all of its
+          images selected; a single one will do. Just remember to select all of the
+          images for an organism before pushing the <em>Group</em> button. As with
+          image metadata, when you fill out the organism metadata any changes you
+          make to the input fields are automatically saved for all selected
+          thumbnails. There is no extra step required to save. If you accidentally
+          close the program or turn off your computer, all of the data you have
+          entered will load correctly when you re-run the software.</p>
+        <p>4. For the fields that differ, e.g. <em>Specimen Part</em>, select
+          each thumbnail separately and enter its information.</p>
+        <p>The one exception for different field values is when reverse
+          geocoding. You may have many different thumbnails selected, which may
+          be disparately located geographically, but pressing the <em>Reverse
+          Geocode</em> button will correctly save the location data to each image
+          individually. In other words, it would be easiest to select all
+          thumbnails (select one thumbnail then e.g. press ctrl-a on Windows
+          computers or command-a on Macs) then click <em>Reverse Geocode</em>.
+          For every image that had latitude and longitude stored in its Exif or
+          that you filled out manually, the county, state, country, continent
+          and potentially locality fields will automatically be filled out. The
+          first time a specific latitude and longitude are reverse geocoded the
+          results are stored locally in a cache. Future requests for those
+          exact same coordinates will use the values in the cache. If for some
+          reason you are not satisfied with the cached results you may check
+          the 'Bypass cache' checkbox to query an external web service for
+          new values.</p>
+      </div>
+      <div id="bd"></div>
+      <div id="ft"><p>5. Once all fields have been filled out for the first
+        organism, return to step 1 and select the thumbnails for another
+        organism.</p>
+      <h3>Continuing later</h3>
+      <p>If you weren't finished with your changes you can quit at any time and
+        start where you left off by going through the <em>View/Edit Existing</em>
+        option at the start screen.</p>
+      <h3>Exporting metadata to CSVs</h3>
+      <p>If you would like to share your metadata with others, when data for all
+        images have been entered return to the Start Screen by clicking
+        <em>File-&gt;Return to Start Screen</em> then click the <em>Manage
+        CSVs</em> option. On the new screen that appears is an option to
+        <em>Export CSVs</em>.</p>
+      <p>This will save all of the image, organism and determation data that you
+        have been working on as well as any new agents, taxa names, or sensu records
+        that you have created to pipe (|) delimited CSV files that can then be
+        sent along with the image files to be uploaded to Bioimages. In the
+        future this will be handled automatically by uploading to the Bioimages
+        server with no need to export CSV files.</p>
+      <h3>Selecting multiple images</h3>
+      <p>When several thumbnails are selected and a field contains multiple
+        different values for those images, <em>&lt;multiple&gt;</em> is shown
+        in that field's entry box. Mousing over the box will display a list of
+        the various values for this field that the selected images have. If you
+        wish to change all of the different values to a single one, simply fill
+        out the field with the new value. For example, multiple images are
+        selected and for the field <em>Locality</em> some images have the value
+        "Near X", some have "Near Y", and some are left blank. If you decide all
+        of those selected images were in fact "Near X", simply delete the
+        <em>&lt;multiple&gt;</em> that is displayed and type in "Near X". This will
+        replace the value for all selected images.</p>
+      <h3>Adding new agents or sensu</h3>
+      <p>If you wish to add new agents or sensu records there are options to do so
+        in the menu bar under the <em>Add</em> menu.</p>
+      <h3>Table view</h3>
+      <p>There are powerful table views available from the menu bar under the
+        <em>View</em> menu. Selecting <em>Locally modified records</em> will only
+        load records that have been edited locally on your computer, so any images
+        you have been working on. The option <em>Entire database</em> will load
+        all Bioimages metadata as well as any records you have been working on.</p>
+      <p>Using the Locally modified records view can be a very easy way to review
+        the records you have been modifying. It is possible to correct mistakes or
+        enter data from this view. When you are satisfied with your changes, click
+        <em>Save changes</em>. This saves any changes you have made to every table,
+        not just the one you are currently viewing. Clicking Save changes does not
+        close the table view; if you are finished you must click the close button.</p>
+      <p>You will likely have the Data Entry screen open at the same time as the
+        Table View. This can be very useful to use the Table View as reference while
+        entering metadata into the Data Entry screen. If you have made changes in
+        the Data Entry screen and would like the Table View to be refreshed to
+        display those new values, click <em>Revert unsaved changes and refresh
+        database</em>. You will lose any changes you made to the Table View and
+        any changes you made on the Data Entry screen will now be reflected in the
+        Table View.</p>
+      <p>If you have mistakenly added records that you wish to delete, select the
+        offending row or rows and click <em>Delete selected rows</em>. Records
+        that have previously been published to Bioimages can't be deleted; instead
+        their data are automatically reset to the published values.</p>
+      <h3>Sorting and filtering</h3>
+      <p>Sorting and filtering are powerful features to help you quickly process
+        images. Sorting reorders the thumbnails; there are options to order by
+        an image's name, its unique identifier, the date and time it was taken,
+        and to order by organism ID. Sorting causes all thumbnails to become
+        visible, undoing any filters you had set, so sort first then filter.</p>
+      <p>There are two types of filters: basic preset filters and advanced filters.
+        Explore the basic preset filter options--many of them make it much easier
+        to find out what images you have yet to enter information for, such as
+        GPS coordinates or identifying the taxa.</p>
+      <p>Advanced filters are essentially SQL queries that let you create very
+        precise, custom filters for deciding which thumbnails to show. The query
+        already contains "SELECT x FROM images WHERE ", so your contribution just
+        has to be in the form of "dcterms_modified &gr; '2015-09'" or multiple
+        statements grouped together like "x = y AND a &lt; b".</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>Bioimages Collection Manager - Manage CSVs</title>
+  </head>
+  <body>
+    <div class="yui-t7" id="doc3">
+      <div id="hd">
+        <h2>Manage CSVs</h2>
+      </div>
+      <div id="ft">
+        <p>This screen contains options to manage character-separated files. The
+        software uses a database internally but it can be convenient for users
+        to store backups of their data in CSV files.</p>
+        <a id="export">
+          <h3>Export database to CSV files</h3>
+        </a>
+        <p>If you wish to make a backup copy of your metadata or if you want
+          to submit your data to be published on the Bioimages website, you
+          can click the Export button. There is a checkbox and the default
+          state of being checked will result in only changes that you have made
+          locally on your computer will be exported. This is a safe choice and
+          and work you have done will be in the resulting CSV files. You can
+          also uncheck the box and the entire Bioimages database will be
+          exported to CSV files. Most users will not have use for this. Columns
+          in the exported files will be character-delimited by the pipe (|)
+          character.</p>
+          <h3>Merge CSV files</h3>
+        <p>If you have exported your work several times and possibly on
+          several different computers you may wish to combine those CSV files
+          to reduce clutter. This option performs that function.</p>
+        <p>First select a group of CSV files that you would like to merge other
+          files into. Then select a second group of CSV files whose content
+          you would like to merge into the first files. This second group can
+          have multiple versions of the same sort of file, for example multiple
+          images.csv files. The names of the files do not actually matter since
+          the first line of each CSV is read the column headers and determine
+          what type of CSV it is. So it is perfectly fine in the second group
+          to select both images-from-work-computer.csv and images-from-laptop.csv
+          and the software will figure out how to merge them all properly.</p>
+          <h3>Import CSV files into the database</h3>
+        <p>There are two categories of CSV files that you can import into the
+          database. The first category consists of CSV files that correspond
+          directly to tables in the database. These include agents.csv,
+          determinations.csv, images.csv, names.csv, organisms.csv and sensu.csv.
+          Rows in these CSV files directly correspond to records in the database
+          and contain exactly the same fields.</p>
+        <p>The second category consists of CSV files that contain two columns:
+          one column contains an identifier and the other contains a value for
+          some field. Importing this type of CSV is an easy way to load in
+          large amounts of data that you gathered together elsewhere. For example,
+          you may have a CSV file containing GPS coordinates in one column and
+          the corresponding image filename in the other column. Importing this
+          way will be much faster than copying and pasting by hand for every
+          set of coordinates. However, it should be noted that for this second
+          category of CSV files you can only import records whose filename
+          or identifier already exists in the databaes. So if you try to import
+          coordinates for filename abaca853.jpg but no such image exists
+          within the database, those coordinates will not be imported. This
+          contrasts wih the first category which will import records even if
+          they do not exist yet.</p>
+        <p>There are several options for importing two-column CSVs. If you
+          are importing data using an image's filename then you should be aware
+          that if that filename is not unique within the database then data
+          will not be imported for it. Another thing to watch out for is that
+          if your CSV file does not have a header row then uncheck 'CSV contains
+          header row' or else you will lose that first row of data. The column
+          separator field defaults to a pipe character (|) but if your CSV file
+          uses a different character to separate columns you can change it. If
+          the columns are separated by tabs then enter \t into the 'Column
+          separator' box. Lastly, there is a dropdown box titled 'Non-identifier
+          field'. This just refers to the other column of data that you are
+          trying to import into the database. Select the field you would like
+          to import into and then click 'Select and import 2-column CSVs'.
+      </div>
+    </div>
+    
+  </body>
+</html>
