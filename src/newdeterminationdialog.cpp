@@ -398,7 +398,7 @@ void NewDeterminationDialog::on_manualEntry_clicked()
     taxaForm.addRow("Genus", genusInput);
 
     QPointer<QLineEdit> speciesInput = new QLineEdit(&taxaDialog);
-    taxaForm.addRow("Species", speciesInput);
+    taxaForm.addRow("Specific\nEpithet", speciesInput);
 
     QPointer<QLineEdit> infraInput = new QLineEdit(&taxaDialog);
     taxaForm.addRow("Infraspecific\nEpithet", infraInput);
@@ -419,8 +419,10 @@ void NewDeterminationDialog::on_manualEntry_clicked()
     QObject::connect(&buttonBox, SIGNAL(rejected()), &taxaDialog, SLOT(reject()));
 
     // Show the dialog as modal
+    // If the user didn't dismiss the dialog, do something with the fields
     if (taxaDialog.exec() == QDialog::Accepted) {
-        // If the user didn't dismiss the dialog, do something with the fields
+
+
         if (!tsnIDInput->text().isEmpty())
         {
             QSqlQuery uniqueQry;
@@ -436,28 +438,29 @@ void NewDeterminationDialog::on_manualEntry_clicked()
             }
             else
             {
+                tsnID = tsnIDInput->text().trimmed();
+                ui->tsnID->setText(tsnID);
+
                 QSqlQuery qry;
                 qry.prepare("INSERT INTO taxa (ubioID, dcterms_identifier, dwc_kingdom, dwc_class, "
                             "dwc_order, dwc_family, dwc_genus, dwc_specificEpithet, dwc_infraspecificEpithet, "
                             "dwc_taxonRank, dwc_scientificNameAuthorship, dwc_vernacularName, dcterms_modified) "
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                qry.addBindValue(ubioIDInput->text());
-                qry.addBindValue(tsnIDInput->text());
-                qry.addBindValue(kingdomInput->text());
-                qry.addBindValue(classInput->text());
-                qry.addBindValue(orderInput->text());
-                qry.addBindValue(familyInput->text());
-                qry.addBindValue(genusInput->text());
-                qry.addBindValue(speciesInput->text());
-                qry.addBindValue(infraInput->text());
-                qry.addBindValue(taxonRankInput->text());
-                qry.addBindValue(authorshipInput->text());
-                qry.addBindValue(vernacularInput->text());
+                qry.addBindValue(ubioIDInput->text().trimmed());
+                qry.addBindValue(tsnID);
+                qry.addBindValue(kingdomInput->text().trimmed());
+                qry.addBindValue(classInput->text().trimmed());
+                qry.addBindValue(orderInput->text().trimmed());
+                qry.addBindValue(familyInput->text().trimmed());
+                qry.addBindValue(genusInput->text().trimmed());
+                qry.addBindValue(speciesInput->text().trimmed());
+                qry.addBindValue(infraInput->text().trimmed());
+                qry.addBindValue(taxonRankInput->text().trimmed().toLower());
+                qry.addBindValue(authorshipInput->text().trimmed());
+                qry.addBindValue(vernacularInput->text().trimmed());
                 qry.addBindValue(modifiedNow());
                 qry.exec();
 
-                tsnID = tsnIDInput->text();
-                ui->tsnID->setText(tsnID);
                 setTaxaFromTSNID();
             }
         }
