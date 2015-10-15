@@ -149,9 +149,9 @@ Website</string>
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>0</y>
+     <y>10</y>
      <width>641</width>
-     <height>61</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="font">
@@ -176,6 +176,24 @@ Website</string>
      <height>200</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>200</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>200</width>
+     <height>200</height>
+    </size>
+   </property>
    <property name="toolTip">
     <string>&lt;i&gt;Asimina triloba&lt;/i&gt; (pawpaw)</string>
    </property>
@@ -192,9 +210,15 @@ Website</string>
      <height>40</height>
     </rect>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>200</width>
+     <height>16777215</height>
+    </size>
+   </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <pointsize>8</pointsize>
     </font>
    </property>
    <property name="text">

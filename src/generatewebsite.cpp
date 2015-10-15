@@ -33,6 +33,13 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
     ui(new Ui::GenerateWebsite)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
+
+#ifdef Q_OS_MAC
+    this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
+                        "QPushButton{font-size:12px; margin-left: -4px; margin-right: -4px; margin-top: -4px; margin-bottom: -6px}");
+    ui->backButton->setStyleSheet("font-size: 13px");
+#endif
 
     loadAgents();
 
@@ -144,6 +151,7 @@ void GenerateWebsite::loadAgents()
     ui->agentBox->setCompleter(completeAgent);
     ui->agentBox->addItems(agentsList);
     ui->agentBox->setCurrentText(lastAgent);
+    ui->agentBox->view()->setMinimumWidth(ui->agentBox->minimumSizeHint().width());
 }
 
 void GenerateWebsite::on_resizeImagesButton_clicked()

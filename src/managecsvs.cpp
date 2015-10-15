@@ -36,6 +36,19 @@ ManageCSVs::ManageCSVs(QWidget *parent) :
     ui(new Ui::ManageCSVs)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
+
+#ifdef Q_OS_MAC
+    this->setStyleSheet("QLabel{font-size:12px} QCheckBox{font-size:11px} QRadioButton{font-size:11px; margin-bottom:-4; margin-top:-4} "
+                        "QComboBox{font-size:12px} QPushButton{font-size:12px; margin-left:-4px; margin-right:-4px; margin-top:-4px; margin-bottom:-6px}");
+    ui->label_8->setStyleSheet("font-size:11px");
+    ui->exportLabel->setStyleSheet("font-size:15px");
+    ui->importLabel->setStyleSheet("font-size:15px");
+    ui->mergeLabel->setStyleSheet("font-size:15px");
+    ui->group1label->setStyleSheet("font-size:13px");
+    ui->group2Label->setStyleSheet("font-size:13px");
+    ui->backButton->setStyleSheet("font-size:13px");
+#endif
 
     ui->selectFirst->setAutoDefault(true);
     ui->selectSecond->setAutoDefault(true);
@@ -88,6 +101,8 @@ ManageCSVs::ManageCSVs(QWidget *parent) :
     versionQry.exec();
     if (versionQry.next())
         dbLastPublished = versionQry.value(0).toString();
+
+    ui->exportButton->setFocus();
 }
 
 ManageCSVs::~ManageCSVs()

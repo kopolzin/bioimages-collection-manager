@@ -40,6 +40,15 @@ StartWindow::StartWindow(QWidget *parent) :
     ui(new Ui::StartWindow)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
+
+    qApp->font().setFamily("Verdana");
+
+#ifdef Q_OS_MAC
+    this->setStyleSheet("QPushButton{margin-left: -6px; margin-right: -6px; margin-top: -4px; margin-bottom: -8px}");
+    ui->updatesAvailable->font().setPointSize(11);
+#endif
+
     ui->bioimagesLogo->setPixmap(QPixmap(":/icon.png"));
     ui->bioimagesLogo->setScaledContents(true);
 
@@ -197,9 +206,21 @@ void StartWindow::closeGenerateWebsite()
 
 void StartWindow::setupDB()
 {
-    // use QStandardPaths::AppDataLocation for Windows, for *NIX use appPath
+    // use QStandardPaths::AppDataLocation for Windows, for *NIX use applicationDirPath
     // check for OS first
     QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data";
+#ifdef Q_OS_WIN
+    dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data";
+#elif defined(Q_OS_MAC)
+    QDir osxpath = QApplication::applicationDirPath();
+    osxpath.cdUp();
+    osxpath.cdUp();
+    osxpath.cdUp();
+    dbPath = osxpath.path() + "/data";
+#else
+    dbPath = QApplication::applicationDirPath() + "/data";
+#endif
+
     QDir dir(dbPath);
     if (!dir.exists())
         dir.mkpath(dbPath);

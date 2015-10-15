@@ -20,17 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "help.h"
-#include "ui_help.h"
 #include <QFile>
 #include <QDebug>
-#include <QDesktopServices>
+#include <QDesktopWidget>
+
+#include "help.h"
+#include "ui_help.h"
 
 Help::Help(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Help)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     QStringList indexList;
     indexList << "Overview" << "Start Screen" << "Process New Images" << "View/Edit Existing Records" << "Data Entry" << "Manage CSVs" << "Generate Website" << "About";

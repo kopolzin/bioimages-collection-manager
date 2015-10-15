@@ -29,12 +29,12 @@
    <iconset resource="BioCM.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="group1label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>140</y>
-     <width>251</width>
+     <width>270</width>
      <height>32</height>
     </rect>
    </property>
@@ -55,7 +55,7 @@
     <rect>
      <x>98</x>
      <y>180</y>
-     <width>75</width>
+     <width>80</width>
      <height>23</height>
     </rect>
    </property>
@@ -63,12 +63,12 @@
     <string>Select Files</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="group2Label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>260</y>
-     <width>251</width>
+     <width>270</width>
      <height>32</height>
     </rect>
    </property>
@@ -88,7 +88,7 @@
     <rect>
      <x>98</x>
      <y>290</y>
-     <width>75</width>
+     <width>80</width>
      <height>23</height>
     </rect>
    </property>
@@ -111,7 +111,7 @@
     <rect>
      <x>81</x>
      <y>350</y>
-     <width>108</width>
+     <width>113</width>
      <height>40</height>
     </rect>
    </property>
@@ -140,7 +140,7 @@ files</string>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>350</y>
      <width>12</width>
      <height>16</height>
@@ -179,7 +179,7 @@ files</string>
    <property name="geometry">
     <rect>
      <x>75</x>
-     <y>480</y>
+     <y>470</y>
      <width>121</width>
      <height>24</height>
     </rect>
@@ -206,7 +206,7 @@ files</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="mergeLabel">
    <property name="geometry">
     <rect>
      <x>6</x>
@@ -229,7 +229,7 @@ files</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
+  <widget class="QLabel" name="importLabel">
    <property name="geometry">
     <rect>
      <x>8</x>
@@ -268,9 +268,9 @@ files</string>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>35</x>
-     <y>440</y>
-     <width>221</width>
+     <x>15</x>
+     <y>435</y>
+     <width>250</width>
      <height>32</height>
     </rect>
    </property>
@@ -289,10 +289,10 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>291</x>
-     <y>440</y>
-     <width>331</width>
-     <height>20</height>
+     <x>340</x>
+     <y>435</y>
+     <width>240</width>
+     <height>32</height>
     </rect>
    </property>
    <property name="font">
@@ -303,16 +303,17 @@ organism, sensu and/or taxon CSVs</string>
     </font>
    </property>
    <property name="text">
-    <string>Import 2-column CSVs having an identifier and a value</string>
+    <string>Import 2-column CSVs having a
+unique identifier and a value</string>
    </property>
   </widget>
   <widget class="QPushButton" name="selectTwoColumnCSV">
    <property name="geometry">
     <rect>
-     <x>388</x>
+     <x>370</x>
      <y>560</y>
-     <width>211</width>
-     <height>24</height>
+     <width>230</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
@@ -327,7 +328,7 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="Line" name="line_3">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>250</x>
      <y>440</y>
      <width>16</width>
      <height>149</height>
@@ -340,9 +341,9 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QRadioButton" name="idInFirstColumn">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>270</x>
      <y>470</y>
-     <width>136</width>
+     <width>175</width>
      <height>17</height>
     </rect>
    </property>
@@ -356,9 +357,9 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QRadioButton" name="idInSecondColumn">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>445</x>
      <y>470</y>
-     <width>151</width>
+     <width>190</width>
      <height>17</height>
     </rect>
    </property>
@@ -371,7 +372,7 @@ organism, sensu and/or taxon CSVs</string>
     <rect>
      <x>390</x>
      <y>530</y>
-     <width>211</width>
+     <width>210</width>
      <height>22</height>
     </rect>
    </property>
@@ -379,9 +380,9 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QCheckBox" name="hasHeaderRowCheckbox">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>270</x>
      <y>510</y>
-     <width>143</width>
+     <width>180</width>
      <height>17</height>
     </rect>
    </property>
@@ -395,20 +396,23 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>440</x>
+     <x>450</x>
      <y>510</y>
-     <width>101</width>
-     <height>16</height>
+     <width>115</width>
+     <height>17</height>
     </rect>
    </property>
    <property name="text">
     <string>Column separator:</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+   </property>
   </widget>
   <widget class="QLineEdit" name="separatorSymbol">
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>570</x>
      <y>509</y>
      <width>21</width>
      <height>19</height>
@@ -427,9 +431,9 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>270</x>
      <y>530</y>
-     <width>101</width>
+     <width>120</width>
      <height>21</height>
     </rect>
    </property>
@@ -440,17 +444,17 @@ organism, sensu and/or taxon CSVs</string>
   <widget class="QCheckBox" name="identifierIsFileNameCheckbox">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>270</x>
      <y>490</y>
-     <width>341</width>
+     <width>360</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Identifier is image filename (caution: filenames not always unique)</string>
+    <string>Identifier is image filename (filenames must be unique)</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_10">
+  <widget class="QLabel" name="exportLabel">
    <property name="geometry">
     <rect>
      <x>11</x>
@@ -498,7 +502,7 @@ organism, sensu and/or taxon CSVs</string>
     <rect>
      <x>223</x>
      <y>40</y>
-     <width>195</width>
+     <width>275</width>
      <height>17</height>
     </rect>
    </property>
@@ -524,6 +528,7 @@ organism, sensu and/or taxon CSVs</string>
   </widget>
  </widget>
  <tabstops>
+  <tabstop>exportButton</tabstop>
   <tabstop>selectFirst</tabstop>
   <tabstop>selectSecond</tabstop>
   <tabstop>mergeButton</tabstop>
@@ -535,11 +540,10 @@ organism, sensu and/or taxon CSVs</string>
   <tabstop>separatorSymbol</tabstop>
   <tabstop>valueDropdown</tabstop>
   <tabstop>selectTwoColumnCSV</tabstop>
-  <tabstop>onlyLocalChanges</tabstop>
-  <tabstop>exportButton</tabstop>
   <tabstop>backButton</tabstop>
   <tabstop>firstSelected</tabstop>
   <tabstop>secondSelected</tabstop>
+  <tabstop>onlyLocalChanges</tabstop>
  </tabstops>
  <resources>
   <include location="BioCM.qrc"/>

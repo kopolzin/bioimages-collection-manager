@@ -38,7 +38,15 @@ EditExisting::EditExisting(QWidget *parent) :
     ui(new Ui::EditExisting)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
     QString lastAgent = "";
+
+#ifdef Q_OS_MAC
+    this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
+                        "QPushButton{font-size:12px; margin-left: -4px; margin-right: -4px; margin-top: -4px; margin-bottom: -6px}");
+    ui->backButton->setStyleSheet("font-size: 13px");
+    ui->doneButton->setStyleSheet("font-size: 15px");
+#endif
 
     QSqlDatabase db = QSqlDatabase::database();
     db.transaction();

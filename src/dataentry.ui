@@ -135,13 +135,13 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>311</width>
+                 <width>330</width>
                  <height>24</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>311</width>
+                 <width>330</width>
                  <height>24</height>
                 </size>
                </property>
@@ -190,6 +190,12 @@
                   </item>
                   <item>
                    <widget class="QToolButton" name="zoomOut">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>19</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>...</string>
                     </property>
@@ -197,6 +203,12 @@
                   </item>
                   <item>
                    <widget class="QToolButton" name="zoomIn">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>19</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string>...</string>
                     </property>
@@ -260,10 +272,16 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>24</height>
+                     </size>
+                    </property>
                     <property name="maximumSize">
                      <size>
-                      <width>60</width>
-                      <height>16777215</height>
+                      <width>75</width>
+                      <height>24</height>
                      </size>
                     </property>
                     <property name="text">
@@ -279,10 +297,16 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>24</height>
+                     </size>
+                    </property>
                     <property name="maximumSize">
                      <size>
-                      <width>60</width>
-                      <height>16777215</height>
+                      <width>75</width>
+                      <height>24</height>
                      </size>
                     </property>
                     <property name="text">
@@ -607,7 +631,7 @@
                  <rect>
                   <x>10</x>
                   <y>140</y>
-                  <width>95</width>
+                  <width>100</width>
                   <height>21</height>
                  </rect>
                 </property>
@@ -620,7 +644,7 @@
                  <rect>
                   <x>10</x>
                   <y>104</y>
-                  <width>178</width>
+                  <width>185</width>
                   <height>16</height>
                  </rect>
                 </property>
@@ -633,7 +657,7 @@
                  <rect>
                   <x>10</x>
                   <y>160</y>
-                  <width>81</width>
+                  <width>100</width>
                   <height>21</height>
                  </rect>
                 </property>
@@ -659,8 +683,8 @@
                  <rect>
                   <x>10</x>
                   <y>180</y>
-                  <width>47</width>
-                  <height>15</height>
+                  <width>50</width>
+                  <height>16</height>
                  </rect>
                 </property>
                 <property name="text">
@@ -698,7 +722,7 @@
                  <rect>
                   <x>10</x>
                   <y>236</y>
-                  <width>197</width>
+                  <width>210</width>
                   <height>16</height>
                  </rect>
                 </property>
@@ -711,7 +735,7 @@
                  <rect>
                   <x>10</x>
                   <y>269</y>
-                  <width>163</width>
+                  <width>175</width>
                   <height>16</height>
                  </rect>
                 </property>
@@ -768,7 +792,7 @@
                  <rect>
                   <x>10</x>
                   <y>204</y>
-                  <width>179</width>
+                  <width>185</width>
                   <height>15</height>
                  </rect>
                 </property>
@@ -794,7 +818,7 @@
                  <rect>
                   <x>228</x>
                   <y>124</y>
-                  <width>101</width>
+                  <width>105</width>
                   <height>17</height>
                  </rect>
                 </property>
@@ -949,7 +973,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>175</width>
                   <height>36</height>
                  </size>
                 </property>
@@ -1028,76 +1052,6 @@ as an individual organism</string>
                <bool>true</bool>
               </property>
              </widget>
-            </item>
-            <item row="2" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="schemeButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>51</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Scheme</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_13">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="manualIDOverride">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>90</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Manually Set</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </item>
             <item row="3" column="0" colspan="2">
              <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1262,18 +1216,17 @@ as an individual organism</string>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>28</height>
+                  <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>28</height>
+                  <height>20</height>
                  </size>
                 </property>
                 <property name="text">
-                 <string>Org. Georeference
-Remarks</string>
+                 <string>Org. Geo. Remarks</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1439,17 +1392,20 @@ Remarks</string>
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>27</height>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>20</height>
                  </size>
                 </property>
                 <property name="editable">
                  <bool>true</bool>
                 </property>
                 <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-                </property>
-                <property name="minimumContentsLength">
-                 <number>0</number>
+                 <enum>QComboBox::AdjustToContents</enum>
                 </property>
                </widget>
               </item>
@@ -1490,17 +1446,26 @@ Remarks</string>
                 <property name="spacing">
                  <number>0</number>
                 </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
                 <item>
                  <widget class="QPushButton" name="cameoButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>30</width>
                     <height>20</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>35</width>
+                    <width>30</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1511,6 +1476,18 @@ Remarks</string>
                 </item>
                 <item>
                  <widget class="QLineEdit" name="cameoText">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>20</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
@@ -2068,7 +2045,7 @@ Remarks</string>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>40</width>
+                    <width>30</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -2081,6 +2058,12 @@ Remarks</string>
                   </property>
                   <item>
                    <widget class="QPushButton" name="previousDetermation">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="minimumSize">
                      <size>
                       <width>21</width>
@@ -2106,6 +2089,12 @@ Remarks</string>
                   </item>
                   <item>
                    <widget class="QPushButton" name="nextDetermination">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="minimumSize">
                      <size>
                       <width>21</width>
@@ -2139,7 +2128,7 @@ Remarks</string>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
-                      <width>10</width>
+                      <width>5</width>
                       <height>20</height>
                      </size>
                     </property>
@@ -2406,6 +2395,76 @@ Remarks</string>
               </item>
              </layout>
             </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="schemeButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>51</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Scheme</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_13">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="manualIDOverride">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>95</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Manually Set</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
            </layout>
           </widget>
          </item>
@@ -2478,7 +2537,7 @@ Remarks</string>
               <widget class="QComboBox" name="thumbnailFilter">
                <property name="minimumSize">
                 <size>
-                 <width>212</width>
+                 <width>190</width>
                  <height>0</height>
                 </size>
                </property>
@@ -2500,7 +2559,7 @@ Remarks</string>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>97</width>
+                 <width>109</width>
                  <height>0</height>
                 </size>
                </property>
@@ -2522,7 +2581,7 @@ Remarks</string>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>50</width>
+                 <width>60</width>
                  <height>0</height>
                 </size>
                </property>
@@ -2717,7 +2776,7 @@ Remarks</string>
           <rect>
            <x>10</x>
            <y>20</y>
-           <width>167</width>
+           <width>152</width>
            <height>20</height>
           </rect>
          </property>
@@ -2734,9 +2793,9 @@ Remarks</string>
         <widget class="QLineEdit" name="image_focalLength_box">
          <property name="geometry">
           <rect>
-           <x>260</x>
+           <x>257</x>
            <y>40</y>
-           <width>51</width>
+           <width>50</width>
            <height>21</height>
           </rect>
          </property>
@@ -2794,9 +2853,9 @@ Remarks</string>
         <widget class="QLineEdit" name="image_date_box">
          <property name="geometry">
           <rect>
-           <x>180</x>
+           <x>161</x>
            <y>20</y>
-           <width>75</width>
+           <width>80</width>
            <height>20</height>
           </rect>
          </property>
@@ -2810,7 +2869,7 @@ Remarks</string>
         <widget class="QLineEdit" name="image_time_box">
          <property name="geometry">
           <rect>
-           <x>250</x>
+           <x>240</x>
            <y>20</y>
            <width>61</width>
            <height>20</height>
@@ -2828,7 +2887,7 @@ Remarks</string>
           <rect>
            <x>10</x>
            <y>0</y>
-           <width>160</width>
+           <width>152</width>
            <height>21</height>
           </rect>
          </property>
@@ -2842,9 +2901,9 @@ Remarks</string>
         <widget class="QLabel" name="label_3">
          <property name="geometry">
           <rect>
-           <x>180</x>
+           <x>161</x>
            <y>0</y>
-           <width>71</width>
+           <width>80</width>
            <height>21</height>
           </rect>
          </property>
@@ -2858,9 +2917,9 @@ Remarks</string>
         <widget class="QLabel" name="label_4">
          <property name="geometry">
           <rect>
-           <x>266</x>
+           <x>240</x>
            <y>0</y>
-           <width>30</width>
+           <width>61</width>
            <height>21</height>
           </rect>
          </property>
@@ -2874,14 +2933,14 @@ Remarks</string>
         <widget class="QLabel" name="label_5">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>10</x>
            <y>40</y>
-           <width>83</width>
+           <width>74</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>  Resolution</string>
+          <string>Resolution</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -2899,21 +2958,24 @@ Remarks</string>
          <property name="text">
           <string>Focal Length</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
         <widget class="QLabel" name="label_7">
          <property name="geometry">
           <rect>
-           <x>0</x>
+           <x>10</x>
            <y>60</y>
-           <width>83</width>
+           <width>85</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>  Photographer</string>
+          <string>Photographer</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="indent">
           <number>-1</number>
@@ -3033,7 +3095,7 @@ Remarks</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>106</width>
+              <width>16777215</width>
               <height>20</height>
              </size>
             </property>
@@ -3391,9 +3453,9 @@ Remarks</string>
         <widget class="QLabel" name="label_9">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>300</x>
            <y>0</y>
-           <width>41</width>
+           <width>60</width>
            <height>21</height>
           </rect>
          </property>
@@ -3407,9 +3469,9 @@ Remarks</string>
         <widget class="QLineEdit" name="image_timezone_box">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>300</x>
            <y>20</y>
-           <width>50</width>
+           <width>60</width>
            <height>20</height>
           </rect>
          </property>
@@ -3421,13 +3483,13 @@ Remarks</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>50</width>
+           <width>60</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>50</width>
+           <width>60</width>
            <height>16777215</height>
           </size>
          </property>
@@ -3439,8 +3501,8 @@ Remarks</string>
          <property name="geometry">
           <rect>
            <x>330</x>
-           <y>180</y>
-           <width>31</width>
+           <y>178</y>
+           <width>30</width>
            <height>20</height>
           </rect>
          </property>
@@ -3473,7 +3535,7 @@ Remarks</string>
          </property>
          <property name="geometry">
           <rect>
-           <x>224</x>
+           <x>240</x>
            <y>60</y>
            <width>121</width>
            <height>20</height>
@@ -3495,7 +3557,7 @@ Remarks</string>
         <widget class="QComboBox" name="photographer">
          <property name="geometry">
           <rect>
-           <x>84</x>
+           <x>95</x>
            <y>61</y>
            <width>69</width>
            <height>20</height>

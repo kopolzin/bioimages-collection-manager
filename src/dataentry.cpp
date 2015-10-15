@@ -57,6 +57,7 @@ DataEntry::DataEntry(const QStringList &fileNames, const QHash<QString,QString> 
     ui(new Ui::DataEntry)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     ui->thumbWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->thumbWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
@@ -99,6 +100,7 @@ DataEntry::DataEntry(const QStringList &fileNames, const QHash<QString, QString>
     ui(new Ui::DataEntry)
 {
     ui->setupUi(this);
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     ui->thumbWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->thumbWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
@@ -144,6 +146,27 @@ DataEntry::~DataEntry()
 
 void DataEntry::setupDataEntry()
 {
+#ifdef Q_OS_MAC
+    this->setStyleSheet("QLabel{font-size: 12px; margin-left: 0px; margin-right: 0px} QLineEdit{font-size: 12px} "
+                        "QCheckBox{font-size: 11px} QComboBox{font-size: 12px} QPushButton{font-size:12px}");
+    ui->generateNewOrganismIDButton->setStyleSheet("font-size: 12px; margin-top: -4px; margin-bottom: -6px");
+    ui->nextDetermination->setStyleSheet("font-size: 12px; margin-left: 2px; margin-right: 0px");
+    ui->previousDetermation->setStyleSheet("font-size: 12px; margin-left: 0px; margin-right: 0px");
+    ui->nextButton->setStyleSheet("font-size: 12px; margin-left: 0px; margin-right: 6px");
+    ui->previousButton->setStyleSheet("font-size: 12px; margin-left: 6px; margin-right: 0px");
+    ui->cameoText->setStyleSheet("font-size: 12px; margin-top: -6px; margin-bottom: 3px");
+    ui->image_timezone_box->setStyleSheet("font-size:12px; margin-left: 0px; margin-right: 0px");
+    ui->horizontalLayout_10->setSpacing(6);
+    ui->horizontalLayout_9->setSpacing(6);
+    ui->horizontalLayout_19->setSpacing(6);
+    ui->horizontalLayout_20->setSpacing(6);
+    ui->horizontalLayoutThumbnailFilter->setSpacing(6);
+    ui->geonamesOtherButton->move(330,180);
+#elif defined Q_OS_LINUX
+    ui->geonamesOtherButton->move(330,184);
+#endif
+
+
     ui->coordinateUncertaintyInMetersBox->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->copyrightOwner->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->usageTermsBox->lineEdit()->setAlignment(Qt::AlignHCenter);
@@ -214,6 +237,86 @@ void DataEntry::setupDataEntry()
     ui->partOfSpecimenBox->setCurrentText("unspecified");
     ui->viewOfSpecimenBox->setCurrentText("unspecified");
     pauseSavingView = false;
+
+    QHashIterator<QString, QString> agentIt(agentHash);
+    while (agentIt.hasNext()) {
+        agentIt.next();
+        agents.append(agentIt.key());
+    }
+    refreshAgentDropdowns();
+
+    loadImageIDs();
+
+    QStringList imageGeorefRemarksList;
+    imageGeorefRemarksList.append("Location determined from camera GPS.");
+    imageGeorefRemarksList.append("Location determined from Google maps.");
+    imageGeorefRemarksList.append("Location determined by an independent GPS measurement.");
+    imageGeorefRemarksList.append("Location determined from GIS database.");
+    imageGeorefRemarksList.append("Location determined from a map.");
+    imageGeorefRemarksList.append("Location based on county center.");
+    QStringList orgGeorefRemarksList = imageGeorefRemarksList;
+    imageGeorefRemarksList.insert(0,"");
+    imageGeorefRemarksList.append("Location inferred from organism coordinates.");
+    orgGeorefRemarksList.append("Location calculated as average of its images' coordinates.");
+
+    ui->imageGeoreferenceRemarks->addItems(imageGeorefRemarksList);
+    ui->imageGeoreferenceRemarks->setCurrentText("");
+    ui->organismGeoreferenceRemarks->addItems(orgGeorefRemarksList);
+    ui->organismGeoreferenceRemarks->setCurrentText("");
+    ui->imageGeoreferenceRemarks->view()->setMinimumWidth(ui->imageGeoreferenceRemarks->minimumSizeHint().width());
+    ui->organismGeoreferenceRemarks->view()->setMinimumWidth(ui->organismGeoreferenceRemarks->minimumSizeHint().width());
+
+    stateTwoLetter.insert("Alabama","AL");
+    stateTwoLetter.insert("Alaska","AK");
+    stateTwoLetter.insert("Arizona","AZ");
+    stateTwoLetter.insert("Arkansas","AR");
+    stateTwoLetter.insert("California","CA");
+    stateTwoLetter.insert("Colorado","CO");
+    stateTwoLetter.insert("Connecticut","CT");
+    stateTwoLetter.insert("Delaware","DE");
+    stateTwoLetter.insert("District of Columbia","DC");
+    stateTwoLetter.insert("Florida","FL");
+    stateTwoLetter.insert("Georgia","GA");
+    stateTwoLetter.insert("Hawaii","HI");
+    stateTwoLetter.insert("Idaho","ID");
+    stateTwoLetter.insert("Illinois","IL");
+    stateTwoLetter.insert("Indiana","IN");
+    stateTwoLetter.insert("Iowa","IA");
+    stateTwoLetter.insert("Kansas","KS");
+    stateTwoLetter.insert("Kentucky","KY");
+    stateTwoLetter.insert("Louisiana","LA");
+    stateTwoLetter.insert("Maine","ME");
+    stateTwoLetter.insert("Maryland","MD");
+    stateTwoLetter.insert("Massachusetts","MA");
+    stateTwoLetter.insert("Michigan","MI");
+    stateTwoLetter.insert("Minnesota","MN");
+    stateTwoLetter.insert("Mississippi","MS");
+    stateTwoLetter.insert("Missouri","MO");
+    stateTwoLetter.insert("Montana","MT");
+    stateTwoLetter.insert("Nebraska","NE");
+    stateTwoLetter.insert("Nevada","NV");
+    stateTwoLetter.insert("New Hampshire","NH");
+    stateTwoLetter.insert("New Jersey","NJ");
+    stateTwoLetter.insert("New Mexico","NM");
+    stateTwoLetter.insert("New York","NY");
+    stateTwoLetter.insert("North Carolina","NC");
+    stateTwoLetter.insert("North Dakota","ND");
+    stateTwoLetter.insert("Ohio","OH");
+    stateTwoLetter.insert("Oklahoma","OK");
+    stateTwoLetter.insert("Oregon","OR");
+    stateTwoLetter.insert("Pennsylvania","PA");
+    stateTwoLetter.insert("Rhode Island","RI");
+    stateTwoLetter.insert("South Carolina","SC");
+    stateTwoLetter.insert("South Dakota","SD");
+    stateTwoLetter.insert("Tennessee","TN");
+    stateTwoLetter.insert("Texas","TX");
+    stateTwoLetter.insert("Utah","UT");
+    stateTwoLetter.insert("Vermont","VT");
+    stateTwoLetter.insert("Virginia","VA");
+    stateTwoLetter.insert("Washington","WA");
+    stateTwoLetter.insert("West Virginia","WV");
+    stateTwoLetter.insert("Wisconsin","WI");
+    stateTwoLetter.insert("Wyoming","WY");
 
 
     QSqlDatabase db = QSqlDatabase::database();
@@ -289,79 +392,6 @@ void DataEntry::setupDataEntry()
     if (qry.next())
         baseReverseGeocodeURL = qry.value(0).toString();
 
-    if (!db.commit())
-    {
-        qDebug() << "Problem committing changes to database in DataEntry::setupDataEntry()";
-        db.rollback();
-    }
-
-    if (appDir.isEmpty())
-        qDebug() << "Error - local application directory cannot be found.";
-
-    if (wasMaximized)
-        this->showMaximized();
-
-    QHashIterator<QString, QString> agentIt(agentHash);
-    while (agentIt.hasNext()) {
-        agentIt.next();
-        agents.append(agentIt.key());
-    }
-    refreshAgentDropdowns();
-
-    loadImageIDs();
-
-    stateTwoLetter.insert("Alabama","AL");
-    stateTwoLetter.insert("Alaska","AK");
-    stateTwoLetter.insert("Arizona","AZ");
-    stateTwoLetter.insert("Arkansas","AR");
-    stateTwoLetter.insert("California","CA");
-    stateTwoLetter.insert("Colorado","CO");
-    stateTwoLetter.insert("Connecticut","CT");
-    stateTwoLetter.insert("Delaware","DE");
-    stateTwoLetter.insert("District of Columbia","DC");
-    stateTwoLetter.insert("Florida","FL");
-    stateTwoLetter.insert("Georgia","GA");
-    stateTwoLetter.insert("Hawaii","HI");
-    stateTwoLetter.insert("Idaho","ID");
-    stateTwoLetter.insert("Illinois","IL");
-    stateTwoLetter.insert("Indiana","IN");
-    stateTwoLetter.insert("Iowa","IA");
-    stateTwoLetter.insert("Kansas","KS");
-    stateTwoLetter.insert("Kentucky","KY");
-    stateTwoLetter.insert("Louisiana","LA");
-    stateTwoLetter.insert("Maine","ME");
-    stateTwoLetter.insert("Maryland","MD");
-    stateTwoLetter.insert("Massachusetts","MA");
-    stateTwoLetter.insert("Michigan","MI");
-    stateTwoLetter.insert("Minnesota","MN");
-    stateTwoLetter.insert("Mississippi","MS");
-    stateTwoLetter.insert("Missouri","MO");
-    stateTwoLetter.insert("Montana","MT");
-    stateTwoLetter.insert("Nebraska","NE");
-    stateTwoLetter.insert("Nevada","NV");
-    stateTwoLetter.insert("New Hampshire","NH");
-    stateTwoLetter.insert("New Jersey","NJ");
-    stateTwoLetter.insert("New Mexico","NM");
-    stateTwoLetter.insert("New York","NY");
-    stateTwoLetter.insert("North Carolina","NC");
-    stateTwoLetter.insert("North Dakota","ND");
-    stateTwoLetter.insert("Ohio","OH");
-    stateTwoLetter.insert("Oklahoma","OK");
-    stateTwoLetter.insert("Oregon","OR");
-    stateTwoLetter.insert("Pennsylvania","PA");
-    stateTwoLetter.insert("Rhode Island","RI");
-    stateTwoLetter.insert("South Carolina","SC");
-    stateTwoLetter.insert("South Dakota","SD");
-    stateTwoLetter.insert("Tennessee","TN");
-    stateTwoLetter.insert("Texas","TX");
-    stateTwoLetter.insert("Utah","UT");
-    stateTwoLetter.insert("Vermont","VT");
-    stateTwoLetter.insert("Virginia","VA");
-    stateTwoLetter.insert("Washington","WA");
-    stateTwoLetter.insert("West Virginia","WV");
-    stateTwoLetter.insert("Wisconsin","WI");
-    stateTwoLetter.insert("Wyoming","WY");
-
     QSqlQuery geonamesQuery;
     geonamesQuery.setForwardOnly(true);
     geonamesQuery.prepare("SELECT dwc_county, dcterms_identifier from geonames_admin");
@@ -376,6 +406,18 @@ void DataEntry::setupDataEntry()
 
         countyGeonameID.insert(county,county_id);
     }
+
+    if (!db.commit())
+    {
+        qDebug() << "Problem committing changes to database in DataEntry::setupDataEntry()";
+        db.rollback();
+    }
+
+    if (appDir.isEmpty())
+        qDebug() << "Error - local application directory cannot be found.";
+
+    if (wasMaximized)
+        this->showMaximized();
 }
 
 void DataEntry::runExifTool()
@@ -3605,7 +3647,6 @@ void DataEntry::setupCompleters()
     withheldList << "" << "Precision of coordinates reduced to protect the organism." << "Precision of coordinates reduced to protect the habitat.";
     ui->image_informationWithheld_box->addItems(withheldList);
     ui->image_informationWithheld_box->setCurrentText("");
-    ui->image_informationWithheld_box->view()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     QStringList generalizationList;
     generalizationList << "" << "Coordinates rounded to nearest .01 degree." << "Coordinates rounded to nearest .1 degree.";
@@ -3617,29 +3658,12 @@ void DataEntry::setupCompleters()
     coordinateUncertaintyList << "10" << "100" << "1000";
     ui->coordinateUncertaintyInMetersBox->addItems(coordinateUncertaintyList);
 
-    QStringList imageGeorefRemarksList;
-    imageGeorefRemarksList.append("Location determined from camera GPS.");
-    imageGeorefRemarksList.append("Location determined from Google maps.");
-    imageGeorefRemarksList.append("Location determined by an independent GPS measurement.");
-    imageGeorefRemarksList.append("Location determined from GIS database.");
-    imageGeorefRemarksList.append("Location determined from a map.");
-    imageGeorefRemarksList.append("Location based on county center.");
-    QStringList orgGeorefRemarksList = imageGeorefRemarksList;
-    imageGeorefRemarksList.insert(0,"");
-    imageGeorefRemarksList.append("Location inferred from organism coordinates.");
-    orgGeorefRemarksList.append("Location calculated as average of its images' coordinates.");
-
-    ui->imageGeoreferenceRemarks->addItems(imageGeorefRemarksList);
-    ui->imageGeoreferenceRemarks->setCurrentText("");
-    ui->organismGeoreferenceRemarks->addItems(orgGeorefRemarksList);
-    ui->organismGeoreferenceRemarks->setCurrentText("");
-    ui->organismGeoreferenceRemarks->view()->setMinimumWidth(325);
-    ui->organismGeoreferenceRemarks->view()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-
     QStringList usageTermsOptions;
     usageTermsOptions << "CC0 1.0" << "CC BY 3.0" << "CC BY-SA 3.0" << "CC BY-NC 3.0" << "CC BY-NC-SA 3.0";
     ui->usageTermsBox->addItems(usageTermsOptions);
     ui->usageTermsBox->setCurrentIndex(4);
+
+    ui->image_informationWithheld_box->view()->setMinimumWidth(ui->image_informationWithheld_box->minimumSizeHint().width());
 }
 
 void DataEntry::setTaxaFromTSN(const QString &tsnID)
@@ -5695,6 +5719,8 @@ void DataEntry::on_zoomOut_clicked()
 
 void DataEntry::scaleImage(double factor)
 {
+    if (imageLabel->pixmap() == 0)
+        return;
     scaleFactor *= factor;
     imageLabel->resize(scaleFactor * imageLabel->pixmap()->size());
 
@@ -6385,6 +6411,7 @@ void DataEntry::refreshAgentDropdowns()
     ui->collectionCode->setCompleter(completeAgent);
     ui->collectionCode->addItems(collection);
     ui->collectionCode->setCurrentText(collectionCodeText);
+    ui->collectionCode->view()->setMinimumWidth(ui->collectionCode->minimumSizeHint().width());
 }
 
 void DataEntry::on_nextDetermination_clicked()
@@ -6865,6 +6892,7 @@ void DataEntry::on_iconifyDone()
     }
 
     qDebug() << "Finished creating thumbnails";
+    ui->thumbnailSort->setEnabled(true);
 }
 
 void DataEntry::showContextMenu(const QPoint &pos)

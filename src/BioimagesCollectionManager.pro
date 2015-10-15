@@ -1,16 +1,10 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-08-26T18:50:31
-#
-#-------------------------------------------------
-
 QT       += core gui widgets network concurrent sql xml
 
 TARGET = "Bioimages Collection Manager"
 TEMPLATE = app
 INCLUDEPATH += .
 
-CONFIG += c++14
+CONFIG += c++11
 
 RC_ICONS += icon.ico
 
@@ -76,5 +70,3 @@ FORMS    += startwindow.ui \
 
 RESOURCES += \
     BioCM.qrc
-
-DISTFILES +=

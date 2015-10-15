@@ -28,7 +28,6 @@
    </property>
    <property name="font">
     <font>
-     <family>MS Shell Dlg 2</family>
      <pointsize>10</pointsize>
      <weight>50</weight>
      <bold>false</bold>
@@ -43,7 +42,7 @@
     <rect>
      <x>40</x>
      <y>20</y>
-     <width>164</width>
+     <width>170</width>
      <height>17</height>
     </rect>
    </property>
@@ -120,7 +119,7 @@
     <rect>
      <x>220</x>
      <y>130</y>
-     <width>81</width>
+     <width>100</width>
      <height>21</height>
     </rect>
    </property>
@@ -146,7 +145,7 @@
     <rect>
      <x>40</x>
      <y>130</y>
-     <width>152</width>
+     <width>160</width>
      <height>23</height>
     </rect>
    </property>
@@ -159,7 +158,7 @@
     <rect>
      <x>40</x>
      <y>100</y>
-     <width>165</width>
+     <width>170</width>
      <height>23</height>
     </rect>
    </property>
@@ -172,7 +171,7 @@
     <rect>
      <x>60</x>
      <y>190</y>
-     <width>113</width>
+     <width>115</width>
      <height>31</height>
     </rect>
    </property>
@@ -192,7 +191,7 @@
     <rect>
      <x>45</x>
      <y>160</y>
-     <width>71</width>
+     <width>75</width>
      <height>21</height>
     </rect>
    </property>
@@ -205,13 +204,13 @@
     <rect>
      <x>120</x>
      <y>160</y>
-     <width>141</width>
+     <width>171</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <pointsize>8</pointsize>
     </font>
    </property>
   </widget>
