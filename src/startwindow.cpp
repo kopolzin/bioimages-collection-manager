@@ -31,7 +31,6 @@
 
 #include "startwindow.h"
 #include "ui_startwindow.h"
-
 #include "tableeditor.h"
 #include "importcsv.h"
 
@@ -43,6 +42,8 @@ StartWindow::StartWindow(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     qApp->font().setFamily("Verdana");
+    QFontMetrics fm(ui->bioimagesLabel->font());
+    this->setMinimumWidth(fm.width(ui->bioimagesLabel->text()));
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QPushButton{margin-left: -6px; margin-right: -6px; margin-top: -4px; margin-bottom: -8px}");
@@ -102,6 +103,59 @@ StartWindow::StartWindow(QWidget *parent) :
 StartWindow::~StartWindow()
 {
     delete ui;
+}
+
+
+void StartWindow::resizeEvent(QResizeEvent *)
+{
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.startscreen.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+
+    int buttonW = ui->bioimagesLogo->size().height();
+    int screenW = this->width();
+    if (screenW < 50)
+        return;
+    if (buttonW > (screenW/3 - 10))
+        buttonW = screenW/3 - 10;
+
+    ui->addNewImagesButton->setFixedWidth(buttonW);
+    ui->editExistingRecordsButton->setFixedWidth(buttonW);
+    ui->HelpButton->setFixedWidth(buttonW);
+    ui->bioimagesLogo->setFixedWidth(buttonW);
+    ui->manageCSVsButton->setFixedWidth(buttonW);
+    ui->generateWebsiteButton->setFixedWidth(buttonW);
+}
+
+void StartWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.startscreen.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+
+        int buttonW = ui->bioimagesLogo->size().height();
+        int screenW = this->width();
+        if (screenW < 50)
+            return;
+        if (buttonW > (screenW/3 - 10))
+            buttonW = screenW/3 - 10;
+
+        ui->addNewImagesButton->setFixedWidth(buttonW);
+        ui->editExistingRecordsButton->setFixedWidth(buttonW);
+        ui->HelpButton->setFixedWidth(buttonW);
+        ui->bioimagesLogo->setFixedWidth(buttonW);
+        ui->manageCSVsButton->setFixedWidth(buttonW);
+        ui->generateWebsiteButton->setFixedWidth(buttonW);
+    }
 }
 
 void StartWindow::on_addNewImagesButton_clicked()

@@ -38,12 +38,11 @@
 #include "ui_processnewimages.h"
 
 ProcessNewImages::ProcessNewImages(QWidget *parent) :
-    QMainWindow(parent),
+    QWidget(parent),
     ui(new Ui::ProcessNewImages)
 {
     ui->setupUi(this);
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
-    ui->bulkRenameButton->setVisible(false);
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QLabel{font-size:12px} QComboBox{font-size:12px} "

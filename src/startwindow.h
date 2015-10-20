@@ -52,6 +52,9 @@ private slots:
     void on_manageCSVsButton_clicked();
     void on_generateWebsiteButton_clicked();
 
+    void resizeEvent(QResizeEvent *);
+    void changeEvent(QEvent*event);
+
     void httpFinished();
     bool loadCSVs(const QString folder);
 

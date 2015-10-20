@@ -23,7 +23,7 @@
 #ifndef EDITEXISTING_H
 #define EDITEXISTING_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QProcess>
 
 #include "agent.h"
@@ -38,7 +38,7 @@ namespace Ui {
 class EditExisting;
 }
 
-class EditExisting : public QMainWindow
+class EditExisting : public QWidget
 {
     Q_OBJECT
 

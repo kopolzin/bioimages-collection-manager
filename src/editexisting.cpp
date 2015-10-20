@@ -34,7 +34,7 @@
 #include "ui_editexisting.h"
 
 EditExisting::EditExisting(QWidget *parent) :
-    QMainWindow(parent),
+    QWidget(parent),
     ui(new Ui::EditExisting)
 {
     ui->setupUi(this);

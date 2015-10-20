@@ -23,7 +23,7 @@
 #ifndef PROCESSNEWIMAGES_H
 #define PROCESSNEWIMAGES_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QProcess>
 #include <memory>
 #include "agent.h"
@@ -34,7 +34,7 @@ namespace Ui {
 class ProcessNewImages;
 }
 
-class ProcessNewImages : public QMainWindow
+class ProcessNewImages : public QWidget
 {
     Q_OBJECT
 
