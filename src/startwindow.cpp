@@ -39,6 +39,7 @@ StartWindow::StartWindow(QWidget *parent) :
     ui(new Ui::StartWindow)
 {
     ui->setupUi(this);
+    screenPosLoaded = false;
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     qApp->font().setFamily("Verdana");
@@ -66,8 +67,29 @@ StartWindow::StartWindow(QWidget *parent) :
     this->show();
     this->activateWindow();
     this->raise();
-    QCoreApplication::processEvents();
     setupDB();
+    QCoreApplication::processEvents();
+
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
+    QSqlQuery qry;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.startscreen.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.startscreen.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (wasMaximized)
+        this->showMaximized();
+    screenPosLoaded = true;
 
     QSqlQuery findLastCSVCheck;
     findLastCSVCheck.prepare("SELECT value FROM settings WHERE setting = (?)");
@@ -92,6 +114,12 @@ StartWindow::StartWindow(QWidget *parent) :
             ui->updatesAvailable->setHidden(false);
     }
 
+    if (!db.commit())
+    {
+        qDebug() << "In startWindow(): Problem querying database.";
+        db.rollback();
+    }
+
     // get first 16 characters of csvVersion and convert to date...
     if (lastCSVCheck.isEmpty() || QDateTime::fromString(lastCSVCheck.left(16),"yyyy-MM-dd'T'hh:mm").addDays(1) < QDateTime::currentDateTime())
     {
@@ -105,15 +133,8 @@ StartWindow::~StartWindow()
     delete ui;
 }
 
-
 void StartWindow::resizeEvent(QResizeEvent *)
 {
-    QSqlQuery qry;
-    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
-    qry.addBindValue("view.startscreen.location");
-    qry.addBindValue(saveGeometry());
-    qry.exec();
-
     int buttonW = ui->bioimagesLogo->size().height();
     int screenW = this->width();
     if (screenW < 50)
@@ -127,6 +148,25 @@ void StartWindow::resizeEvent(QResizeEvent *)
     ui->bioimagesLogo->setFixedWidth(buttonW);
     ui->manageCSVsButton->setFixedWidth(buttonW);
     ui->generateWebsiteButton->setFixedWidth(buttonW);
+    if (!screenPosLoaded)
+        return;
+
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.startscreen.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void StartWindow::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.startscreen.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
 }
 
 void StartWindow::changeEvent(QEvent* event)

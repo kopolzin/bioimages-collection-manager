@@ -38,6 +38,7 @@ EditExisting::EditExisting(QWidget *parent) :
     ui(new Ui::EditExisting)
 {
     ui->setupUi(this);
+    screenPosLoaded = false;
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
     QString lastAgent = "";
 
@@ -104,6 +105,24 @@ EditExisting::EditExisting(QWidget *parent) :
         if (!qry.value(0).toString().isEmpty())
             loadAllAgents = qry.value(0).toBool();
     }
+
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.editexisting.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.editexisting.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (wasMaximized)
+        this->showMaximized();
+
+    screenPosLoaded = true;
 
     QString loadQuality = "fullQuality";
     qry.prepare("SELECT value FROM settings WHERE setting = (?)");
@@ -176,6 +195,43 @@ void EditExisting::setup()
 EditExisting::~EditExisting()
 {
     delete ui;
+}
+
+void EditExisting::resizeEvent(QResizeEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.editexisting.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void EditExisting::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.editexisting.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void EditExisting::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.editexisting.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+    }
 }
 
 void EditExisting::on_backButton_clicked()

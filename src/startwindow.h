@@ -74,6 +74,7 @@ private slots:
 private:
     Ui::StartWindow *ui;
     QString appPath;
+    bool screenPosLoaded;
 
     ProcessNewImages *processNewImagesWindow;
     EditExisting *editExistingWindow;
@@ -93,6 +94,7 @@ private:
     bool extractCSVs;
     QString lastPublished; // stores dcterms_modified from GitHub
     MergeTables *updatesTable;
+    void moveEvent(QMoveEvent *);
 };
 
 #endif // STARTWINDOW_H

@@ -42,6 +42,7 @@ ProcessNewImages::ProcessNewImages(QWidget *parent) :
     ui(new Ui::ProcessNewImages)
 {
     ui->setupUi(this);
+    screenPosLoaded = false;
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
 #ifdef Q_OS_MAC
@@ -94,6 +95,24 @@ ProcessNewImages::ProcessNewImages(QWidget *parent) :
     if (qry.next())
         lastTrailingChars = qry.value(0).toString();
 
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.addimages.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.addimages.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (wasMaximized)
+        this->showMaximized();
+
+    screenPosLoaded = true;
+
     if (!db.commit())
     {
         qDebug() << "Problem committing changes to database in ProcessNewImages()";
@@ -111,6 +130,43 @@ ProcessNewImages::ProcessNewImages(QWidget *parent) :
 ProcessNewImages::~ProcessNewImages()
 {
     delete ui;
+}
+
+void ProcessNewImages::resizeEvent(QResizeEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.addimages.location");
+    qry.addBindValue(this->saveGeometry());
+    qry.exec();
+}
+
+void ProcessNewImages::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.addimages.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void ProcessNewImages::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.addimages.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+    }
 }
 
 void ProcessNewImages::on_backButton_clicked()

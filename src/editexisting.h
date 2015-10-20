@@ -70,6 +70,7 @@ private:
     int numImagesRef = 0;
     int numImagesFound = 0;
     bool pauseLoading;
+    bool screenPosLoaded;
 
     QHash<QString,QString> agentHash;
     QHash<QString,QString> photographerHash;
@@ -100,6 +101,9 @@ private:
     void findFilenamesByAgent();
     QString dbLastPublished;
     void findMatchingFiles();
+    void resizeEvent(QResizeEvent *);
+    void changeEvent(QEvent *event);
+    void moveEvent(QMoveEvent *);
 };
 
 #endif // EDITEXISTING_H

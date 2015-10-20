@@ -59,6 +59,7 @@ private slots:
 private:
     Ui::ProcessNewImages *ui;
     QPointer<Help> help_w;
+    bool screenPosLoaded;
 
     QStringList agents;
     QList<Agent> loadedAgents;
@@ -75,6 +76,9 @@ private:
     bool checkExifLocation();
     QPointer<DataEntry> dataEntry;
     QString modifiedNow();
+    void resizeEvent(QResizeEvent *);
+    void changeEvent(QEvent *event);
+    void moveEvent(QMoveEvent *);
 };
 
 #endif // PROCESSNEWIMAGES_H
