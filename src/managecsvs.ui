@@ -302,7 +302,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -320,7 +320,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>170</height>
+         <height>135</height>
         </size>
        </property>
       </widget>
@@ -336,13 +336,16 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>170</height>
+         <height>135</height>
         </size>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <item>
         <widget class="QLabel" name="group2Label">
          <property name="font">
@@ -414,7 +417,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>10</height>
           </size>
          </property>
         </spacer>
@@ -473,8 +476,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Merge selected
-files</string>
+            <string>Merge selected files</string>
            </property>
           </widget>
          </item>

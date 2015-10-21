@@ -43,8 +43,21 @@ StartWindow::StartWindow(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     qApp->font().setFamily("Verdana");
-    QFontMetrics fm(ui->bioimagesLabel->font());
-    this->setMinimumWidth(fm.width(ui->bioimagesLabel->text()));
+    QFontMetrics fmLabel(ui->bioimagesLabel->font());
+    this->setMinimumWidth(fmLabel.width(ui->bioimagesLabel->text()) + 20);
+    QFontMetrics fmButton(ui->addNewImagesButton->font());
+//    int w = fmButton.width("New images")*2.5;
+    this->setMinimumHeight(fmButton.width("New images")*2.6);
+//    ui->addNewImagesButton->setMinimumWidth(w);
+//    ui->addNewImagesButton->setMinimumHeight(w);
+//    ui->editExistingRecordsButton->setMinimumWidth(w);
+//    ui->editExistingRecordsButton->setMinimumHeight(w);
+//    ui->HelpButton->setMinimumWidth(w);
+//    ui->HelpButton->setMinimumHeight(w);
+//    ui->manageCSVsButton->setMinimumWidth(w);
+//    ui->manageCSVsButton->setMinimumHeight(w);
+//    ui->generateWebsiteButton->setMinimumWidth(w);
+//    ui->generateWebsiteButton->setMinimumHeight(w);
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QPushButton{margin-left: -6px; margin-right: -6px; margin-top: -4px; margin-bottom: -8px}");
@@ -171,6 +184,10 @@ void StartWindow::moveEvent(QMoveEvent *)
 
 void StartWindow::changeEvent(QEvent* event)
 {
+    if (!screenPosLoaded)
+        return;
+    if (isHidden())
+        return;
     if (event->type() == QEvent::WindowStateChange) {
         bool isMax = false;
         if (windowState() == Qt::WindowMaximized)

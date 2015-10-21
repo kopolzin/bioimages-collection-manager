@@ -166,6 +166,11 @@ void DataEntry::setupDataEntry()
     ui->geonamesOtherButton->move(330,184);
 #endif
 
+    QFontMetrics fmInfra(ui->infraspecificEpithetLabel->font());
+    ui->infraspecificEpithetLabel->setMinimumWidth(fmInfra.width(ui->infraspecificEpithetLabel->text()) + 5);
+
+    QFontMetrics fmCredit(ui->imageCreditYearLabel->font());
+    ui->imageCreditYearLabel->setMinimumWidth(fmCredit.width(ui->imageCreditYearLabel->text()) + 5);
 
     ui->coordinateUncertaintyInMetersBox->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->copyrightOwner->lineEdit()->setAlignment(Qt::AlignHCenter);

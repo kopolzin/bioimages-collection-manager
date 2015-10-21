@@ -42,6 +42,9 @@ EditExisting::EditExisting(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
     QString lastAgent = "";
 
+    QFontMetrics fm(ui->uniqueIDLabel->font());
+    ui->uniqueIDLabel->setMinimumWidth(fm.width(ui->uniqueIDLabel->text()) + 20);
+
 #ifdef Q_OS_MAC
     this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
                         "QPushButton{font-size:12px; margin-left: -4px; margin-right: -4px; margin-top: -4px; margin-bottom: -6px}");
