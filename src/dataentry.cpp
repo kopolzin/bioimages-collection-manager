@@ -1097,8 +1097,8 @@ void DataEntry::refreshInputFields()
                 continue;
 
             similarImages.append(row);
-            ui->thumbWidget->item(row)->setBackground(QColor(255,165,79));
-            // 255,127,36 (brighter orange), 255,165,79 (lighter), 238,118,33 (darker)
+            ui->thumbWidget->item(row)->setBackground(QColor(255,204,153));
+            // 255,127,36 (brighter orange), 255,165,79 (lighter), 255,204,153 (lighter still), 238,118,33 (darker)
         }
 
         // let's fetch all the image values from the database
@@ -2783,6 +2783,12 @@ void DataEntry::clearInputFields()
 
     for (QLineEdit *lineEditPtr : lineEditNames)
         lineEditPtr->setText("");
+
+    for (auto sim : similarImages)
+    {
+        ui->thumbWidget->item(sim)->setBackground(Qt::NoBrush);
+    }
+    similarImages.clear();
 
     ui->image_informationWithheld_box->setCurrentText("");
     ui->image_dataGeneralization_box->setCurrentText("");

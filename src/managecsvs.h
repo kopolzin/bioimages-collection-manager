@@ -83,6 +83,10 @@ private:
     QStringList firstFileNames;
     QStringList secondFileNames;
     QString dbLastPublished;
+    void resizeEvent(QResizeEvent *);
+    void moveEvent(QMoveEvent *);
+    void changeEvent(QEvent *event);
+    bool screenPosLoaded;
 };
 
 #endif // MANAGECSVS_H

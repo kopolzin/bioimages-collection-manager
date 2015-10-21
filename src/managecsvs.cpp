@@ -94,6 +94,11 @@ ManageCSVs::ManageCSVs(QWidget *parent) :
     headers.append(sensu);
     headers.append(names);
 
+    ui->exportButton->setFocus();
+
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
     dbLastPublished = "2015-09-21";
     QSqlQuery versionQry;
     versionQry.prepare("SELECT value FROM settings WHERE setting = (?)");
@@ -102,12 +107,72 @@ ManageCSVs::ManageCSVs(QWidget *parent) :
     if (versionQry.next())
         dbLastPublished = versionQry.value(0).toString();
 
-    ui->exportButton->setFocus();
+    QSqlQuery qry;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.managecsvs.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.managecsvs.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (wasMaximized)
+        this->showMaximized();
+
+    screenPosLoaded = true;
+
+    if (!db.commit())
+    {
+        qDebug() << "In manageCSVs(): Problem querying database.";
+        db.rollback();
+    }
 }
 
 ManageCSVs::~ManageCSVs()
 {
     delete ui;
+}
+
+void ManageCSVs::resizeEvent(QResizeEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.managecsvs.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void ManageCSVs::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.managecsvs.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void ManageCSVs::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.managecsvs.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+    }
 }
 
 QStringList ManageCSVs::selectFiles()
