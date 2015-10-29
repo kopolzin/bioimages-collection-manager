@@ -46,22 +46,12 @@ StartWindow::StartWindow(QWidget *parent) :
     QFontMetrics fmLabel(ui->bioimagesLabel->font());
     this->setMinimumWidth(fmLabel.width(ui->bioimagesLabel->text()) + 20);
     QFontMetrics fmButton(ui->addNewImagesButton->font());
-//    int w = fmButton.width("New images")*2.5;
     this->setMinimumHeight(fmButton.width("New images")*2.6);
-//    ui->addNewImagesButton->setMinimumWidth(w);
-//    ui->addNewImagesButton->setMinimumHeight(w);
-//    ui->editExistingRecordsButton->setMinimumWidth(w);
-//    ui->editExistingRecordsButton->setMinimumHeight(w);
-//    ui->HelpButton->setMinimumWidth(w);
-//    ui->HelpButton->setMinimumHeight(w);
-//    ui->manageCSVsButton->setMinimumWidth(w);
-//    ui->manageCSVsButton->setMinimumHeight(w);
-//    ui->generateWebsiteButton->setMinimumWidth(w);
-//    ui->generateWebsiteButton->setMinimumHeight(w);
 
 #ifdef Q_OS_MAC
-    this->setStyleSheet("QPushButton{margin-left: -6px; margin-right: -6px; margin-top: -4px; margin-bottom: -8px}");
-    ui->updatesAvailable->font().setPointSize(11);
+    QFont font(ui->updatesAvailable->font());
+    font.setPointSize(11);
+    ui->updatesAvailable->setFont(font);
 #endif
 
     ui->bioimagesLogo->setPixmap(QPixmap(":/icon.png"));
@@ -169,6 +159,8 @@ void StartWindow::resizeEvent(QResizeEvent *)
     qry.addBindValue("view.startscreen.location");
     qry.addBindValue(saveGeometry());
     qry.exec();
+
+    qDebug("logo: %d, button: %d",ui->bioimagesLogo->width(),ui->addNewImagesButton->width());
 }
 
 void StartWindow::moveEvent(QMoveEvent *)

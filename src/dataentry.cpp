@@ -222,8 +222,6 @@ void DataEntry::setupDataEntry()
 
     ui->zoomIn->setIcon(QPixmap(":/zoomin.png"));
     ui->zoomOut->setIcon(QPixmap(":/zoomout.png"));
-    ui->tsnIDNotFound->setStyleSheet("color: red");
-    ui->tsnIDNotFound->setVisible(false);
     ui->setOrganismIDFirst->setStyleSheet("color: red");
     ui->setOrganismIDFirst->setVisible(false);
 
@@ -1029,7 +1027,6 @@ void DataEntry::refreshInputFields()
     QList<QListWidgetItem*> itemList = ui->thumbWidget->selectedItems();
     int numSelect = itemList.count();
 
-    ui->tsnIDNotFound->setVisible(false);
     ui->setOrganismIDFirst->setVisible(false);
     ui->identificationRemarks->clear();
     ui->cameoText->clear();
@@ -2783,7 +2780,6 @@ QString DataEntry::simplifyField(QStringList &fieldList)
 
 void DataEntry::clearInputFields()
 {
-    ui->tsnIDNotFound->setVisible(false);
     ui->setOrganismIDFirst->setVisible(false);
 
     for (QLineEdit *lineEditPtr : lineEditNames)
@@ -3126,7 +3122,6 @@ void DataEntry::on_thumbWidget_itemSelectionChanged()
     if (pauseRefreshing)
         return;
     clearToolTips();
-    ui->tsnIDNotFound->setVisible(false);
     ui->setOrganismIDFirst->setVisible(false);
 
     if (ui->thumbWidget->selectedItems().count() == 0)
@@ -3733,7 +3728,6 @@ void DataEntry::on_organismID_textEdited(const QString &arg1)
 
 void DataEntry::on_tsnID_textEdited(const QString &arg1)
 {
-    ui->tsnIDNotFound->setVisible(false);
     ui->setOrganismIDFirst->setVisible(false);
     saveInput("tsnID",arg1);
 }

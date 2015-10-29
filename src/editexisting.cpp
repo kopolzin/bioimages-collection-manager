@@ -47,7 +47,7 @@ EditExisting::EditExisting(QWidget *parent) :
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
-                        "QPushButton{font-size:12px; margin-left: -4px; margin-right: -4px; margin-top: -4px; margin-bottom: -6px}");
+                        "QPushButton{font-size:12px}");
     ui->backButton->setStyleSheet("font-size: 13px");
     ui->doneButton->setStyleSheet("font-size: 15px");
 #endif
@@ -224,6 +224,10 @@ void EditExisting::moveEvent(QMoveEvent *)
 
 void EditExisting::changeEvent(QEvent* event)
 {
+    if (!screenPosLoaded)
+        return;
+    if (isHidden())
+        return;
     if (event->type() == QEvent::WindowStateChange) {
         bool isMax = false;
         if (windowState() == Qt::WindowMaximized)
