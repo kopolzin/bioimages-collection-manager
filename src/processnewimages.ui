@@ -68,6 +68,9 @@
          <property name="text">
           <string>Welcome. Who are you?</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
        </item>
        <item>
@@ -153,7 +156,10 @@
           </font>
          </property>
          <property name="text">
-          <string>If necessary, rename your image files now</string>
+          <string>If necessary, rename your image files now.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -236,6 +242,9 @@
          </property>
          <property name="text">
           <string>Select images to add to Bioimages:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>

@@ -49,8 +49,10 @@ StartWindow::StartWindow(QWidget *parent) :
     this->setMinimumHeight(fmButton.width("New images")*2.6);
 
 #ifdef Q_OS_MAC
+    this->setStyleSheet("QPushButton{border: 1px solid black; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #f6f7fa, stop: 1 #dadbde);} "
+                        "QPushButton:pressed {background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dadbde, stop: 1 #f6f7fa);}");
     QFont font(ui->updatesAvailable->font());
-    font.setPointSize(11);
+    font.setPointSize(12);
     ui->updatesAvailable->setFont(font);
 #endif
 
@@ -59,7 +61,8 @@ StartWindow::StartWindow(QWidget *parent) :
 
     ui->updatesAvailable->setAutoFillBackground(false);
     ui->updatesAvailable->setHidden(true);
-    ui->updatesAvailable->setStyleSheet("color: yellow; background-color: black");
+    ui->updatesAvailable->setStyleSheet("QPushButton {color: yellow; background-color: black} "
+                                        "QPushButton:pressed {background-color: yellow; color:black}");
 
     ui->addNewImagesButton->setAutoDefault(true);
     ui->editExistingRecordsButton->setAutoDefault(true);
@@ -159,8 +162,6 @@ void StartWindow::resizeEvent(QResizeEvent *)
     qry.addBindValue("view.startscreen.location");
     qry.addBindValue(saveGeometry());
     qry.exec();
-
-    qDebug("logo: %d, button: %d",ui->bioimagesLogo->width(),ui->addNewImagesButton->width());
 }
 
 void StartWindow::moveEvent(QMoveEvent *)

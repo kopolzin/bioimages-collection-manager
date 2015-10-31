@@ -37,7 +37,9 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
-                        "QPushButton{font-size:12px; margin-left: -4px; margin-right: -4px; margin-top: -4px; margin-bottom: -6px}");
+                        "QPushButton{font-size:12px}");
+    ui->headingLabel->setStyleSheet("font: bold 14px");
+    ui->resizeImagesButton->setStyleSheet("font-size: 13px");
     ui->backButton->setStyleSheet("font-size: 13px");
 #endif
 

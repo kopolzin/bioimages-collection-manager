@@ -141,7 +141,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Metadata updates are available. Click here to update.</string>
+        <string> Metadata updates are available. Click here to update. </string>
        </property>
        <property name="flat">
         <bool>false</bool>

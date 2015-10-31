@@ -46,7 +46,10 @@ ProcessNewImages::ProcessNewImages(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
 #ifdef Q_OS_MAC
-    this->setStyleSheet("QLabel{font-size:12px} QComboBox{font-size:12px} ");
+    this->setStyleSheet("QLabel{font-size:12px} QComboBox{font-size:12px} QPushButton{font-size:13px}");
+    ui->uniqIDLabel->setStyleSheet("font: bold 14px");
+    ui->bulkRenameLabel->setStyleSheet("font: bold 14px");
+    ui->selectImagesLabel->setStyleSheet("font: bold 14px");
     ui->backButton->setStyleSheet("font-size:13px");
     ui->doneButton->setStyleSheet("font-size:15px");
 #endif

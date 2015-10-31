@@ -47,7 +47,10 @@ EditExisting::EditExisting(QWidget *parent) :
 
 #ifdef Q_OS_MAC
     this->setStyleSheet("QLabel{font-size: 12px} QCheckBox{font-size: 12px} QComboBox{font-size: 12px} "
-                        "QPushButton{font-size:12px}");
+                        "QPushButton{font-size:13px}");
+    ui->uniqueIDLabel->setStyleSheet("font: bold 14px");
+    ui->advancedOptionsLabel->setStyleSheet("font-size: 14px");
+    ui->selectImageLocationLabel->setStyleSheet("font: bold 14px");
     ui->backButton->setStyleSheet("font-size: 13px");
     ui->doneButton->setStyleSheet("font-size: 15px");
 #endif
