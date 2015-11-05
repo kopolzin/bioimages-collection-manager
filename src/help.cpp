@@ -38,6 +38,9 @@ Help::Help(QWidget *parent) :
     indexList << "Overview" << "Start Screen" << "Process New Images" << "View/Edit Existing Records" << "Data Entry" << "Manage CSVs" << "Generate Website" << "About";
     ui->helpIndex->addItems(indexList);
 
+    QFontMetrics fmIndex(ui->helpIndex->font());
+    ui->helpIndex->setMinimumWidth(fmIndex.width("View/Edit Existing Records") + 10);
+
     connect(ui->helpIndex,SIGNAL(itemSelectionChanged()),this,SLOT(updateTextBrowser()));\
     ui->textBrowser->setOpenExternalLinks(true);
 }

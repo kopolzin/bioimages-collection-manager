@@ -258,8 +258,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>layoutWidget</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
   <zorder>addButton</zorder>
  </widget>
  <tabstops>

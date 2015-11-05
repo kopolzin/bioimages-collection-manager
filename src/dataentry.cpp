@@ -172,6 +172,9 @@ void DataEntry::setupDataEntry()
     QFontMetrics fmCredit(ui->imageCreditYearLabel->font());
     ui->imageCreditYearLabel->setMinimumWidth(fmCredit.width(ui->imageCreditYearLabel->text()) + 5);
 
+    QFontMetrics fmFrame2(ui->establishmentLabel->font());
+    ui->frame_2->setMinimumWidth(fmFrame2.width(ui->establishmentLabel->text()) * 2.5);
+
     ui->coordinateUncertaintyInMetersBox->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->copyrightOwner->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->usageTermsBox->lineEdit()->setAlignment(Qt::AlignHCenter);
@@ -1064,6 +1067,14 @@ void DataEntry::refreshInputFields()
     ui->copyrightOwner->setToolTip("");
     ui->usageTermsBox->setToolTip("");
 
+    ui->groupOfSpecimenBox->setToolTip("");
+    ui->partOfSpecimenBox->setToolTip("");
+    ui->viewOfSpecimenBox->setToolTip("");
+
+    ui->locality->setToolTip("");
+    ui->organismLatLong->setToolTip("");
+    ui->organismScope->setToolTip("");
+
     currentDeterminations.clear();
     currentDetermination = 0;
     QStringList determList;
@@ -1244,12 +1255,14 @@ void DataEntry::refreshInputFields()
                     orgLatLon = "";
                 }
                 ui->organismLatLong->setText(orgLatLon);
+                ui->organismLatLong->setToolTip(orgLatLon);
                 ui->organismAltitude->setText(orgAlt);
 
                 ui->organismRemarks->setText(query.value(1).toString());
                 ui->organismRemarks->setToolTip(query.value(1).toString());
                 ui->organismName->setText(query.value(8).toString());
                 ui->organismScope->setText(query.value(9).toString());
+                ui->organismScope->setToolTip(query.value(9).toString());
                 ui->htmlNote->setText(query.value(11).toString());
                 ui->htmlNote->setToolTip(query.value(11).toString());
                 ui->organismGeoreferenceRemarks->setCurrentText(query.value(4).toString());
@@ -1374,6 +1387,7 @@ void DataEntry::refreshInputFields()
         ui->image_continent_box->setText(image.continent);
 
         ui->locality->setText(image.locality);
+        ui->locality->setToolTip(image.locality);
         ui->imageGeoreferenceRemarks->setCurrentText(image.georeferenceRemarks);
         ui->image_informationWithheld_box->setCurrentText(image.informationWithheld);
         ui->image_dataGeneralization_box->setCurrentText(image.dataGeneralizations);
@@ -2808,6 +2822,10 @@ void DataEntry::clearInputFields()
     ui->establishmentMeans->setToolTip("");
     ui->copyrightOwner->setToolTip("");
     ui->usageTermsBox->setToolTip("");
+
+    ui->groupOfSpecimenBox->setToolTip("");
+    ui->partOfSpecimenBox->setToolTip("");
+    ui->viewOfSpecimenBox->setToolTip("");
 
     currentDeterminations.clear();
     currentDetermination = 0;

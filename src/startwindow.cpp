@@ -129,7 +129,6 @@ StartWindow::StartWindow(QWidget *parent) :
     // get first 16 characters of csvVersion and convert to date...
     if (lastCSVCheck.isEmpty() || QDateTime::fromString(lastCSVCheck.left(16),"yyyy-MM-dd'T'hh:mm").addDays(1) < QDateTime::currentDateTime())
     {
-        qDebug() << "We have go-ahead. Time to download new CSVs.";
         checkCSVUpdate();
     }
 }
