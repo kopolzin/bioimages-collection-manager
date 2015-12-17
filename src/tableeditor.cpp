@@ -294,7 +294,7 @@ void TableEditor::setupLayout()
     taxaTable = new QTableView(this);
     taxaTable->setModel(taxaModel);
     taxaTable->resizeColumnsToContents();
-    taxaTable->sortByColumn(0,Qt::AscendingOrder);
+    taxaTable->sortByColumn(1,Qt::AscendingOrder);
     taxaTable->setSortingEnabled(true);
 
     // set up organisms tab
