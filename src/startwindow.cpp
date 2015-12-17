@@ -898,6 +898,7 @@ QString StartWindow::modifiedNow()
 
 void StartWindow::on_updatesAvailable_clicked()
 {
+    ui->updatesAvailable->setEnabled(false);
     if (loadCSVs(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs"))
     {
         // compare the tmp_ tables with the originals

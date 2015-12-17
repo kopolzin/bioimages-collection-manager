@@ -69,6 +69,7 @@ private:
     void setupLayout();
     QString modifiedNow();
     bool updating;
+    bool merging;
     QString onlyTable;
 
     QString ageT;

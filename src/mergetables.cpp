@@ -1444,6 +1444,11 @@ void MergeTables::alterTables()
 
 void MergeTables::submit()
 {
+    if (merging)
+        return;
+
+    merging = true;
+
     // first let's merge the changes that have no conflicts
     mergeNonConflicts();
 
