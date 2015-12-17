@@ -5937,7 +5937,7 @@ QString DataEntry::viewToNumbers(const QString &group, const QString &part, cons
         }
         else if (part == "twig")
         {
-            pt3 = "03";
+            pt2 = "03";
             if (view == "after fallen needles")
                 pt3 = "01";
             else if (view == "showing attachment of needles")
