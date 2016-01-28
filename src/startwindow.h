@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,6 @@ private:
     QNetworkAccessManager qnam;
     QNetworkReply *reply;
     QString modifiedNow();
-    bool extractCSVs;
     QString lastPublished; // stores dcterms_modified from GitHub
     MergeTables *updatesTable;
     void moveEvent(QMoveEvent *);

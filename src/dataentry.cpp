@@ -708,7 +708,11 @@ void DataEntry::iconify(const QStringList &imageFileNames)
     defaultIcon.addPixmap(defaultThumb);
 
     // load thumbnail cache
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QFile thumbFile(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/thumbnails.dat");
+#else
+    QFile thumbFile(QApplication::applicationDirPath() + "/data/thumbnails.dat");
+#endif
     QHash<QString,QIcon> iconCache;
     QList<QString> imageURIList;
     QList<QIcon> iconList;

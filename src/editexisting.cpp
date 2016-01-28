@@ -179,7 +179,11 @@ EditExisting::EditExisting(QWidget *parent) :
 
 void EditExisting::setup()
 {
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QFile thumbFile(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/thumbnails.dat");
+#else
+    QFile thumbFile(QApplication::applicationDirPath() + "/data/thumbnails.dat");
+#endif
     if (thumbFile.open(QIODevice::ReadOnly))
     {
         ui->currentCacheSizeLabel->setText("Current cache file size: " + QString::number(thumbFile.size()/1048576) + " MB");
@@ -1160,7 +1164,11 @@ void EditExisting::on_clearCache_clicked()
     }
 
     // delete it
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString cachePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/thumbnails.dat";
+#else
+    QString cachePath = QApplication::applicationDirPath() + "/data/thumbnails.dat";
+#endif
     if (QFile::exists(cachePath))
         QFile::remove(cachePath);
     ui->currentCacheSizeLabel->setText("Current cache file size: 0 MB");

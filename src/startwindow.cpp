@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -309,30 +309,28 @@ void StartWindow::closeGenerateWebsite()
 
 void StartWindow::setupDB()
 {
-    // use QStandardPaths::AppDataLocation for Windows, for *NIX use applicationDirPath
-    // check for OS first
+    // use QStandardPaths::AppDataLocation for Windows or Mac, for *NIX use applicationDirPath
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data";
-#ifdef Q_OS_WIN
-    dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data";
-#elif defined(Q_OS_MAC)
-    QDir osxpath = QApplication::applicationDirPath();
-    osxpath.cdUp();
-    osxpath.cdUp();
-    osxpath.cdUp();
-    dbPath = osxpath.path() + "/data";
 #else
-    dbPath = QApplication::applicationDirPath() + "/data";
+    QString dbPath = QApplication::applicationDirPath() + "/data";
 #endif
 
     QDir dir(dbPath);
     if (!dir.exists())
         dir.mkpath(dbPath);
 
-    // use local.db; if it doesn't exist copy bioimages.db to local.db
-    // if bioimages.db doesn't exist either... download CSV files from GitHub
-    // and use hardcoded program defaults (which a table will be created from)?
+    // use local-bioimages.db; if it doesn't exist copy bioimages.db to local.db
+    // if bioimages.db doesn't exist either, download CSV files from GitHub
+    // and use hardcoded program defaults (which a table will be created from)
     QString localdbFile = dbPath + "/local-bioimages.db";
     QString dbFile = dbPath + "/bioimages.db";
+#ifdef Q_OS_MAC
+    QDir osxpath = QApplication::applicationDirPath();
+    osxpath.cdUp();
+    dbFile = osxpath.path() + "/Resources/bioimages.db";
+#endif
+
     if (!QFileInfo::exists(localdbFile))
     {
         if (QFileInfo::exists(dbFile))
@@ -342,10 +340,10 @@ void StartWindow::setupDB()
         }
         else
         {
-            // there are no database files at all!
+            // there are no database files at all
             // try to look for CSV files use hardcoded settings to create a new db
-            QMessageBox::critical(0, tr("Cannot open database"),
-                tr("Unable to open database at 'data/local-bioimages.db'"), QMessageBox::Cancel);
+            QMessageBox::critical(0, "Cannot open database",
+                "Unable to open database at: " + localdbFile, QMessageBox::Cancel);
             return;
         }
     }
@@ -362,9 +360,9 @@ void StartWindow::setupDB()
             }
             else
             {
-                // there are no database files at all!
+                // there are no database files at all
                 qDebug() << "local-bioimages.db is empty and there is no bioimages.db in " + dbPath;
-                // try to look for CSV files use hardcoded settings to create a new db
+                // try to look for CSV files or use hardcoded settings to create a new db
             }
         }
     }
@@ -514,9 +512,6 @@ void StartWindow::setupDB()
 void StartWindow::checkCSVUpdate()
 {
     fetchList << QUrl("https://raw.githubusercontent.com/baskaufs/Bioimages/master/last-published.xml");
-    if (fetchList.isEmpty())
-        return;
-
     fetchThis();
 }
 
@@ -539,9 +534,13 @@ void StartWindow::startRequest(QUrl url)
 
 void StartWindow::httpFinished()
 {
-    // use QStandardPaths::AppDataLocation for Windows, for *NIX use appPath
-    // check for OS first
+    // use QStandardPaths::AppDataLocation for Windows or Mac, for *NIX use appPath
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
+#else
+    QString dlPath = QApplication::applicationDirPath() + "/data/CSVs";
+#endif
+
     QDir dir(dlPath);
     if (!dir.exists())
         dir.mkpath(dlPath);
@@ -572,7 +571,7 @@ void StartWindow::httpFinished()
             // #1 - what version of CSVs is the database based on (see dbLastPublished)
             // ---- this version should be stored in the database itself, not just dbLastPublished variable
             // #2 - what's the latest version of CSVs on GitHub (download last-published.xml and find out)
-            // #3 - what's the latest version of CSVs stored in /AppData (there might not be any version)
+            // #3 - what's the latest version of CSVs stored in /AppDataLocation (there might not be any version)
 
             // 1. make sure the version in last-published.xml is a new version (compare to local last-published.xml), otherwise abort
             // 2. overwrite local last-published with the downloaded one
@@ -641,6 +640,7 @@ void StartWindow::httpFinished()
                 }
             }
 
+            bool updatesAvailable = false;
             if (lastPublished.isEmpty())
             {
                 // there was a problem parsing the downloaded latest-modified.xml; handle that problem here
@@ -653,6 +653,8 @@ void StartWindow::httpFinished()
             else if (lastPublished <= downloadedVersion && !downloadedVersion.isEmpty() && allCSVsPresent)
             {
                 qDebug() << "Not fetching files from GitHub. Local CSVs are already up to date.";
+                ui->updatesAvailable->setHidden(false);
+                updatesAvailable = true;
             }
             else
             {
@@ -663,21 +665,15 @@ void StartWindow::httpFinished()
                     xmlOut << xmlText;
                     downloadedVersionFile.close();
                 }
-
-                // delete local CSVs before downloading new versions
-                for (auto csv : csvs)
-                    QFile::remove(dlPath + "/" + csv);
-
-                QString agentsURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/agents.csv";
-                QString determURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/determinations.csv";
-                QString imagesURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/images.csv";
-                QString namesURL  = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/names.csv";
-                QString organsURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/organisms.csv";
-                QString sensuURL  = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/sensu.csv";
-
-                fetchList << agentsURL << determURL << imagesURL << namesURL << organsURL << sensuURL;
-                extractCSVs = true;
+                ui->updatesAvailable->setHidden(false);
+                updatesAvailable = true;
             }
+
+            QSqlQuery setAvailable;
+            setAvailable.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+            setAvailable.addBindValue("metadata.updateavailable");
+            setAvailable.addBindValue(updatesAvailable);
+            setAvailable.exec();
         }
         else if (loc == "https://raw.githubusercontent.com/baskaufs/Bioimages/master/agents.csv")
         {
@@ -776,12 +772,18 @@ void StartWindow::httpFinished()
             reply->deleteLater();
             reply = 0;
 
-            ui->updatesAvailable->setHidden(false);
-            QSqlQuery setAvailable;
-            setAvailable.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
-            setAvailable.addBindValue("metadata.updateavailable");
-            setAvailable.addBindValue(true);
-            setAvailable.exec();
+            if (loadCSVs(dlPath))
+            {
+                // compare the tmp_ tables with the originals
+                // prompt user for their choices of which conflicting rows to keep
+                // cleanup by using "delete from" on all tmp_ tables IF the user didn't cancel
+                qDebug() << "Downloaded CSVs have been loaded into their tmp_ tables";
+
+                updatesTable = new MergeTables();
+                connect(updatesTable,SIGNAL(finished()),this,SLOT(cleanup()));
+                updatesTable->setAttribute(Qt::WA_DeleteOnClose);
+                updatesTable->displayChoices();
+            }
             return;
         }
     }
@@ -899,28 +901,44 @@ QString StartWindow::modifiedNow()
 void StartWindow::on_updatesAvailable_clicked()
 {
     ui->updatesAvailable->setEnabled(false);
-    if (loadCSVs(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs"))
-    {
-        // compare the tmp_ tables with the originals
-        // prompt user for their choices of which conflicting rows to keep
-        // cleanup by using "delete from" on all tmp_ tables IF the user didn't cancel
-        qDebug() << "Downloaded CSVs have been loaded into their tmp_ tables";
 
-        updatesTable = new MergeTables();
-        connect(updatesTable,SIGNAL(finished()),this,SLOT(cleanup()));
-        updatesTable->setAttribute(Qt::WA_DeleteOnClose);
-        updatesTable->displayChoices();
-    }
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+    QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
+#else
+    QString dlPath = QApplication::applicationDirPath() + "/data/CSVs";
+#endif
+
+    // delete local CSVs before downloading new versions
+    QStringList csvs;
+    csvs << "agents.csv" << "determinations.csv" << "images.csv" << "names.csv" << "organisms.csv" << "sensu.csv";
+    for (auto csv : csvs)
+        QFile::remove(dlPath + "/" + csv);
+
+    QString agentsURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/agents.csv";
+    QString determURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/determinations.csv";
+    QString imagesURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/images.csv";
+    QString namesURL  = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/names.csv";
+    QString organsURL = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/organisms.csv";
+    QString sensuURL  = "https://raw.githubusercontent.com/baskaufs/Bioimages/master/sensu.csv";
+
+    fetchList << QUrl("https://raw.githubusercontent.com/baskaufs/Bioimages/master/last-published.xml");
+    fetchList << agentsURL << determURL << imagesURL << namesURL << organsURL << sensuURL;
+    fetchThis();
 }
 
 void StartWindow::cleanup()
 {
     ui->updatesAvailable->setHidden(true);
 
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+    QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
+#else
+    QString dlPath = QApplication::applicationDirPath() + "/data/CSVs";
+#endif
+
     // now get the release date of the local CSVs
     if (lastPublished.isEmpty())
     {
-        QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
         QFile downloadedVersionFile(dlPath + "/last-downloaded.xml");
         if (downloadedVersionFile.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -964,19 +982,18 @@ void StartWindow::cleanup()
     setCSVCheck.exec();
 
     // remove CSVs and last-downloaded.xml
-    QString folder = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
     QStringList csvs;
     csvs << "agents" << "determinations" << "images" << "names" << "organisms" << "sensu";
     for (auto csv : csvs)
     {
-        QString file = folder + "/" + csv + ".csv";
+        QString file = dlPath + "/" + csv + ".csv";
         if (QFile::exists(file))
         {
             QFile::remove(file);
         }
     }
 
-    QString xmlFile = folder + "/last-downloaded.xml";
+    QString xmlFile = dlPath + "/last-downloaded.xml";
     if (QFile::exists(xmlFile))
         QFile::remove(xmlFile);
 }
