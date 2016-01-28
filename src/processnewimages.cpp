@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -409,22 +409,19 @@ bool ProcessNewImages::checkExifLocation()
     else
         qDebug() << "Unable to load 'appPath' value from Settings table";
 
+#ifdef Q_OS_WIN
     QString exifLocation = "\"" + appPath + "/exiftool/exiftool.exe\"";
-    QString exifLocationNoExt = "\"" + appPath + "/exiftool/exiftool\"";
+#elif defined(Q_OS_MAC)
+    QString exifLocation = "\"" + appPath + "/exiftool\"";
+#else
+    QString exifLocation = "\"" + appPath + "/exiftool/exiftool\"";
+#endif
 
-    if (QFile::exists(exifLocation.remove("\"")))
-    {
-        exifLocation = exifLocation;
-    }
-    else if (!QFile::exists(exifLocation.remove("\"")) && QFile::exists(exifLocationNoExt.remove("\"")))
-    {
-        exifLocation = exifLocationNoExt;
-    }
-    else
+    if (!QFile::exists(exifLocation.remove("\"")))
     {
         QMessageBox msgBox;
         msgBox.setText("Could not find the ExifTool executable in:\n"
-                       + appPath + "/exiftool/");
+                       + exifLocation);
         msgBox.exec();
         return false;
     }
