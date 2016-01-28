@@ -8,6 +8,10 @@ CONFIG += c++11
 
 RC_ICONS += icon.ico
 
+macx-clang {
+    ICON = mac.icns
+}
+
 SOURCES += main.cpp\
         startwindow.cpp \
     help.cpp \
