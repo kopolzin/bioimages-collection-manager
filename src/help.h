@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,10 @@ private slots:
 private:
     Ui::Help *ui;
     QString read(QString filename);
+    void resizeEvent(QResizeEvent *);
+    void moveEvent(QMoveEvent *);
+    void changeEvent(QEvent *event);
+    bool screenPosLoaded;
 };
 
 #endif // HELP_H

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,11 @@ private:
     Ui::GenerateWebsite *ui;
     QStringList selectImages();
     void loadAgents();
+
+    void resizeEvent(QResizeEvent *);
+    void moveEvent(QMoveEvent *);
+    void changeEvent(QEvent *event);
+    bool screenPosLoaded;
 
     QHash<QString,QString> agentHash;
     QStringList agentsList;

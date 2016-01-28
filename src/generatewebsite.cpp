@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,9 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
 
     loadAgents();
 
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
     QSqlQuery qry;
     qry.prepare("SELECT value FROM settings WHERE setting = (?)");
     qry.addBindValue("path.photofolder");
@@ -53,11 +56,77 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
         photoFolder = qry.value(0).toString();
 
     baseFolder = "";
+
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.generatewebsite.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.generatewebsite.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (wasMaximized)
+        this->showMaximized();
+
+    screenPosLoaded = true;
+
+    if (!db.commit())
+    {
+        qDebug() << "In GenerateWebsite(): Problem querying database.";
+        db.rollback();
+    }
 }
 
 GenerateWebsite::~GenerateWebsite()
 {
     delete ui;
+}
+
+
+void GenerateWebsite::resizeEvent(QResizeEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.generatewebsite.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void GenerateWebsite::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.generatewebsite.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void GenerateWebsite::changeEvent(QEvent* event)
+{
+    if (!screenPosLoaded)
+        return;
+    if (isHidden())
+        return;
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.generatewebsite.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+    }
 }
 
 QStringList GenerateWebsite::selectImages()

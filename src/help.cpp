@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QDesktopWidget>
+#include <QSqlQuery>
 
 #include "help.h"
 #include "ui_help.h"
@@ -38,11 +39,49 @@ Help::Help(QWidget *parent) :
     indexList << "Overview" << "Start Screen" << "Process New Images" << "View/Edit Existing Records" << "Data Entry" << "Manage CSVs" << "Generate Website" << "About";
     ui->helpIndex->addItems(indexList);
 
+#ifdef Q_OS_MAC
+    QFont fontTB(ui->textBrowser->font());
+    fontTB.setPixelSize(13);
+    ui->textBrowser->setFont(fontTB);
+
+    QFont fontHI(ui->helpIndex->font());
+    fontHI.setPixelSize(13);
+    ui->helpIndex->setFont(fontHI);
+#endif
+
     QFontMetrics fmIndex(ui->helpIndex->font());
-    ui->helpIndex->setMinimumWidth(fmIndex.width("View/Edit Existing Records") + 10);
+    ui->helpIndex->setMinimumWidth(fmIndex.width("View/Edit Existing Records") + 15);
 
     connect(ui->helpIndex,SIGNAL(itemSelectionChanged()),this,SLOT(updateTextBrowser()));\
     ui->textBrowser->setOpenExternalLinks(true);
+
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
+    QSqlQuery qry;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.help.location");
+    qry.exec();
+    if (qry.next())
+        restoreGeometry(qry.value(0).toByteArray());
+
+    bool wasMaximized = false;
+    qry.prepare("SELECT value FROM settings WHERE setting = (?)");
+    qry.addBindValue("view.help.fullscreen");
+    qry.exec();
+    if (qry.next())
+        wasMaximized = qry.value(0).toBool();
+
+    if (!db.commit())
+    {
+        qDebug() << "In manageCSVs(): Problem querying database.";
+        db.rollback();
+    }
+
+    if (wasMaximized)
+        this->showMaximized();
+
+    screenPosLoaded = true;
 }
 
 void Help::select(const QString &selected)
@@ -76,6 +115,47 @@ void Help::select(const QString &selected)
 Help::~Help()
 {
     delete ui;
+}
+
+void Help::resizeEvent(QResizeEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.help.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void Help::moveEvent(QMoveEvent *)
+{
+    if (!screenPosLoaded)
+        return;
+    QSqlQuery qry;
+    qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+    qry.addBindValue("view.help.location");
+    qry.addBindValue(saveGeometry());
+    qry.exec();
+}
+
+void Help::changeEvent(QEvent* event)
+{
+    if (!screenPosLoaded)
+        return;
+    if (isHidden())
+        return;
+    if (event->type() == QEvent::WindowStateChange) {
+        bool isMax = false;
+        if (windowState() == Qt::WindowMaximized)
+            isMax = true;
+
+        QSqlQuery qry;
+        qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
+        qry.addBindValue("view.help.fullscreen");
+        qry.addBindValue(isMax);
+        qry.exec();
+    }
 }
 
 void Help::updateTextBrowser()
