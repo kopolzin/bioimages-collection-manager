@@ -368,12 +368,16 @@ void NewDeterminationDialog::on_manualEntry_clicked()
     // Use a layout allowing to have a label next to each field
     QFormLayout taxaForm(&taxaDialog);
 
+    QLabel *info = new QLabel(this);
+    info->setTextFormat(Qt::RichText);
+    info->setOpenExternalLinks(true);
+    info->setText("Enter as much taxonomic information as possible. The tsnID is particularly<br>"
+                 "important and can be obtained at <a href='http://www.itis.gov/'>http://www.itis.gov/</a>. If the organism has<br>"
+                 "no tsnID there, please use a placeholder value in the interim, e.g. place<br>"
+                 "an 'x' in front of its ubioID and use that as the tsnID (if ubioID is 5767885<br>"
+                 "and it has no tsnID, set its tsnID to x5767885).");
     // Add some text above the fields
-    taxaForm.addRow(new QLabel("Enter as much taxonomic information as possible. The tsnID is particularly\n"
-                               "important and can be obtained at http://www.itis.gov/. If the organism has\n"
-                               "no tsnID there, please use a placeholder value in the interim, e.g. place\n"
-                               "an 'x' in front of its ubioID and use that as the tsnID (if ubioID is 5767885\n"
-                               "and it has no tsnID, set its tsnID to x5767885)."));
+    taxaForm.addRow(info);
 
     // Add the lineEdits with their respective labels
     QPointer<QLineEdit> tsnIDInput = new QLineEdit(&taxaDialog);
