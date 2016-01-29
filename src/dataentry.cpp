@@ -1100,22 +1100,26 @@ void DataEntry::refreshInputFields()
             return;
         }
 
-        QSqlQuery findImages;
-        findImages.prepare("SELECT fileName FROM images WHERE foaf_depicts = (?)");
-        findImages.addBindValue(images[h].depicts);
-        findImages.exec();
-
-        while (findImages.next())
+        // only set background colors of images of the same organism if the selected image has foaf_depicts set
+        if (!images[h].depicts.isEmpty())
         {
-            int row = thumbWidgetItems.indexOf(findImages.value(0).toString());
+            QSqlQuery findImages;
+            findImages.prepare("SELECT fileName FROM images WHERE foaf_depicts = (?)");
+            findImages.addBindValue(images[h].depicts);
+            findImages.exec();
 
-            // not all of an organism's images are necessarily loaded
-            if (row == -1)
-                continue;
+            while (findImages.next())
+            {
+                int row = thumbWidgetItems.indexOf(findImages.value(0).toString());
 
-            similarImages.append(row);
-            ui->thumbWidget->item(row)->setBackground(QColor(255,204,153));
-            // 255,127,36 (brighter orange), 255,165,79 (lighter), 255,204,153 (lighter still), 238,118,33 (darker)
+                // not all of an organism's images are necessarily loaded
+                if (row == -1)
+                    continue;
+
+                similarImages.append(row);
+                ui->thumbWidget->item(row)->setBackground(QColor(255,204,153));
+                // 255,127,36 (brighter orange), 255,165,79 (lighter), 255,204,153 (lighter still), 238,118,33 (darker)
+            }
         }
 
         // let's fetch all the image values from the database
