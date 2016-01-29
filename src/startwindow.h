@@ -68,6 +68,7 @@ private slots:
     void closeGenerateWebsite();
 
     void on_updatesAvailable_clicked();
+    void cancelDownload();
     void cleanup();
     void setupDB();
 
@@ -93,7 +94,9 @@ private:
     QString modifiedNow();
     QString lastPublished; // stores dcterms_modified from GitHub
     MergeTables *updatesTable;
+    QMessageBox *downloadingMsg;
     void moveEvent(QMoveEvent *);
+    bool downloadingCanceled;
 };
 
 #endif // STARTWINDOW_H

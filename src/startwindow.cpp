@@ -97,6 +97,7 @@ StartWindow::StartWindow(QWidget *parent) :
         this->showMaximized();
     screenPosLoaded = true;
 
+    downloadingCanceled = false;
     QSqlQuery findLastCSVCheck;
     findLastCSVCheck.prepare("SELECT value FROM settings WHERE setting = (?)");
     findLastCSVCheck.addBindValue("metadata.lastcheck");
@@ -172,6 +173,13 @@ void StartWindow::moveEvent(QMoveEvent *)
     qry.addBindValue("view.startscreen.location");
     qry.addBindValue(saveGeometry());
     qry.exec();
+}
+
+void StartWindow::cancelDownload()
+{
+    qDebug() << "Downloading canceled.";
+    downloadingCanceled = true;
+    ui->updatesAvailable->setEnabled(true);
 }
 
 void StartWindow::changeEvent(QEvent* event)
@@ -520,6 +528,13 @@ void StartWindow::fetchThis()
     if (fetchList.isEmpty())
         return;
 
+    if (downloadingCanceled)
+    {
+        qDebug() << "Downloading canceled. Clearing fetchlist.";
+        fetchList.clear();
+        return;
+    }
+
     QUrl fetchThis = fetchList.first();
     fetchList.removeFirst();
     qDebug() << "Making a request to: " + fetchThis.toString();
@@ -534,6 +549,14 @@ void StartWindow::startRequest(QUrl url)
 
 void StartWindow::httpFinished()
 {
+    QCoreApplication::processEvents();
+    if (downloadingCanceled)
+    {
+        reply->deleteLater();
+        reply = 0;
+        return;
+    }
+
     // use QStandardPaths::AppDataLocation for Windows or Mac, for *NIX use appPath
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
@@ -779,9 +802,14 @@ void StartWindow::httpFinished()
                 // cleanup by using "delete from" on all tmp_ tables IF the user didn't cancel
                 qDebug() << "Downloaded CSVs have been loaded into their tmp_ tables";
 
+                if (downloadingCanceled)
+                    return;
+
                 updatesTable = new MergeTables();
+                connect(updatesTable,SIGNAL(loaded()),downloadingMsg,SLOT(close()));
                 connect(updatesTable,SIGNAL(finished()),this,SLOT(cleanup()));
                 updatesTable->setAttribute(Qt::WA_DeleteOnClose);
+                QCoreApplication::processEvents();
                 updatesTable->displayChoices();
             }
             return;
@@ -901,6 +929,23 @@ QString StartWindow::modifiedNow()
 void StartWindow::on_updatesAvailable_clicked()
 {
     ui->updatesAvailable->setEnabled(false);
+    downloadingCanceled = false;
+
+    downloadingMsg = new QMessageBox;
+    downloadingMsg->setStandardButtons(QMessageBox::Cancel);
+    downloadingMsg->setAttribute(Qt::WA_DeleteOnClose);
+    // connect cancel button to clearing the http queue and stop the merge dialogue from popping up
+    QObject::connect(downloadingMsg, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(cancelDownload()));
+//    for (auto child : downloadingMsg->findChildren<QDialogButtonBox *>())
+//        child->hide();
+    downloadingMsg->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+    downloadingMsg->setText("Downloading and parsing metadata updates. Please wait.\n\n"
+                            "If any conflicts are found between the updates and changes\n"
+                            "you have made locally, you will be prompted for how you\n"
+                            "would like to resolve the conflicts.");
+    downloadingMsg->setModal(true);
+    downloadingMsg->show();
+    QCoreApplication::processEvents();
 
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
