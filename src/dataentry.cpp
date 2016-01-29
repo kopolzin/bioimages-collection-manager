@@ -3934,46 +3934,6 @@ void DataEntry::saveInput(const QString &inputField, const QString &inputData)
             updateQuery.addBindValue(images[i].identifier);
             updateQuery.exec();
         }
-        else if (inputField == "organismCoordinates")
-        {
-            QStringList latlonSplit = data.split(",");
-            if (latlonSplit.size() != 2)
-                return;
-            QSqlQuery findGeoRem;
-            findGeoRem.prepare("SELECT dwc_georeferenceRemarks FROM organisms WHERE dcterms_identifier = (?) LIMIT 1");
-            findGeoRem.addBindValue(images[i].depicts);
-            findGeoRem.exec();
-            if (findGeoRem.next())
-            {
-                // no need to save coordinates if they're calculated from the average; just recalculate the average
-                if (findGeoRem.value(0).toString() == "Location calculated as average of its images' coordinates.")
-                {
-                    averageLocations(images[i].depicts);
-                    continue;
-                }
-            }
-
-            QSqlQuery upImLocQuery;
-            upImLocQuery.prepare("UPDATE images SET dwc_decimalLatitude = (?), dwc_decimalLongitude = (?), "
-                                "dcterms_modified = (?) WHERE foaf_depicts = (?) and dwc_georeferenceRemarks = (?)");
-            upImLocQuery.addBindValue(latlonSplit.at(0).trimmed());
-            upImLocQuery.addBindValue(latlonSplit.at(1).trimmed());
-            upImLocQuery.addBindValue(modifiedNow());
-            upImLocQuery.addBindValue(images[i].depicts);
-            upImLocQuery.addBindValue("Location inferred from organism coordinates.");
-            upImLocQuery.exec();
-
-            // save organism latitude except when it is derived from its images
-            QSqlQuery upOrgLocQuery;
-            upOrgLocQuery.prepare("UPDATE organisms SET dwc_decimalLatitude = (?), dwc_decimalLongitude = (?), "
-                                  "dcterms_modified = (?) WHERE dcterms_identifier = (?) and dwc_georeferenceRemarks != (?)");
-            upOrgLocQuery.addBindValue(latlonSplit.at(0).trimmed());
-            upOrgLocQuery.addBindValue(latlonSplit.at(1).trimmed());
-            upOrgLocQuery.addBindValue(modifiedNow());
-            upOrgLocQuery.addBindValue(images[i].depicts);
-            upOrgLocQuery.addBindValue("Location calculated as average of its images' coordinates.");
-            upOrgLocQuery.exec();
-        }
         else if (inputField == "imageCoordinates")
         {
             QStringList latlonSplit = data.split(",");
@@ -5482,14 +5442,25 @@ void DataEntry::on_organismLatLong_textEdited(const QString &arg1)
     // for each foaf_depicts, see if its current altitude matches arg1, if so continue
     // otherwise update its georefRemarks and if applicable call averageLocations
     QStringList organismsToUpdate;
+    bool imageWithoutOrganism = false;
     // update organism locations that depend on the image locations
     for (int i = 0; i < itemList.length(); i++)
     {
         int j = imageIndexHash.value(itemList.at(i)->text());
         if (images[j].depicts.isEmpty())
+        {
+            imageWithoutOrganism = true;
             continue;
+        }
         organismsToUpdate.append(images[j].depicts);
     }
+
+    if (imageWithoutOrganism)
+    {
+        ui->setOrganismIDFirst->setVisible(true);
+        return;
+    }
+
     organismsToUpdate.removeDuplicates();
 
     QSqlDatabase db = QSqlDatabase::database();
