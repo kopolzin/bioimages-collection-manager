@@ -1059,6 +1059,51 @@ void MergeTables::findDeterminationDiff()
         newDeterminationIDs.append(id);
         determinationIDs.removeAll(id);
     }
+
+    // one more check to weed out duplicate determinations
+    for (auto id : determinationIDs)
+    {
+        QString dsw1;
+        QString dsw2;
+        QString date1;
+        QString date2;
+        QString tsnID1;
+        QString tsnID2;
+        QString accordingTo1;
+        QString accordingTo2;
+
+        QSqlQuery det1Qry;
+        det1Qry.prepare("SELECT dsw_identified, dwc_dateIdentified, tsnID, nameAccordingToID "
+                            "FROM " + detT + " WHERE " + id + " LIMIT 1");
+        det1Qry.exec();
+
+        if (det1Qry.next())
+        {
+            dsw1 = det1Qry.value(0).toString();
+            date1 = det1Qry.value(1).toString();
+            tsnID1 = det1Qry.value(2).toString();
+            accordingTo1 = det1Qry.value(3).toString();
+        }
+
+        QSqlQuery det2Qry;
+        det2Qry.prepare("SELECT dsw_identified, dwc_dateIdentified, tsnID, nameAccordingToID "
+                            "FROM " + det2T + " WHERE " + id + " LIMIT 1");
+        det2Qry.exec();
+
+        if (det2Qry.next())
+        {
+            dsw2 = det2Qry.value(0).toString();
+            date2 = det2Qry.value(1).toString();
+            tsnID2 = det2Qry.value(2).toString();
+            accordingTo2 = det2Qry.value(3).toString();
+        }
+
+        if (dsw1 == dsw2 && date1 == date2 && tsnID1 == tsnID2 && accordingTo1 == accordingTo2)
+        {
+            determinationIDs.removeAll(id);
+            qDebug() << "Removed a non-conflicting determination: dsw_identified = " + dsw1;
+        }
+    }
 }
 
 void MergeTables::findOrganismDiff()
@@ -1295,11 +1340,13 @@ void MergeTables::mergeNonConflicts()
         mergeQry.addBindValue(id);
         mergeQry.exec();
     }
+    // special case since determinations have 4 primary keys
     for (auto id : newDeterminationIDs)
     {
+        if (id.isEmpty())
+            continue;
         QSqlQuery mergeQry;
-        mergeQry.prepare("INSERT OR REPLACE INTO " + det2T + " SELECT * FROM " + detT + " WHERE dcterms_identifier = (?)");
-        mergeQry.addBindValue(id);
+        mergeQry.prepare("INSERT OR REPLACE INTO " + det2T + " SELECT * FROM " + detT + " WHERE " + id);
         mergeQry.exec();
     }
     for (auto id : newImageIDs)
