@@ -793,7 +793,10 @@ void EditExisting::on_selectImageLocationButton_clicked()
 
     if (!fileNames.isEmpty())
         findMatchingFiles();
+
+#ifndef Q_OS_MAC
     ui->doneButton->setFocus();
+#endif
 }
 
 void EditExisting::findMatchingFiles()

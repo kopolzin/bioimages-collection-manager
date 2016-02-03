@@ -343,8 +343,11 @@ void ProcessNewImages::on_selectImagesButton_clicked()
         db.rollback();
     }
 
+#ifndef Q_OS_MAC
     if (!fileNames.isEmpty())
         ui->doneButton->setFocus();
+#endif
+
 
     if (!filenameCollisions.isEmpty())
     {
@@ -412,7 +415,9 @@ bool ProcessNewImages::checkExifLocation()
 #ifdef Q_OS_WIN
     QString exifLocation = "\"" + appPath + "/exiftool/exiftool.exe\"";
 #elif defined(Q_OS_MAC)
-    QString exifLocation = "\"" + appPath + "/exiftool\"";
+    QDir osxpath = QApplication::applicationDirPath();
+    osxpath.cdUp();
+    QString exifLocation = "\"" + osxpath.path() + "/Resources/exiftool\"";
 #else
     QString exifLocation = "\"" + appPath + "/exiftool/exiftool\"";
 #endif
