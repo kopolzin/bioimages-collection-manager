@@ -156,10 +156,13 @@ void DataEntry::setupDataEntry()
     ui->previousButton->setStyleSheet("font-size: 12px; margin-left: 6px; margin-right: 0px");
     ui->cameoText->setStyleSheet("font-size: 12px; margin-top: -6px; margin-bottom: 3px");
     ui->image_timezone_box->setStyleSheet("font-size:12px; margin-left: 0px; margin-right: 0px");
-    ui->horizontalLayout_10->setSpacing(6);
+    ui->organismIDLabel->setStyleSheet("font: bold 13px;");
+    ui->headerDeterminations->setStyleSheet("font: bold 13px;");
     ui->horizontalLayout_9->setSpacing(6);
+    ui->horizontalLayout_10->setSpacing(6);
     ui->horizontalLayout_19->setSpacing(6);
     ui->horizontalLayout_20->setSpacing(6);
+    ui->horizontalLayout_27->setSpacing(6);
     ui->horizontalLayoutThumbnailFilter->setSpacing(6);
     ui->geonamesOtherButton->move(330,180);
 #elif defined Q_OS_LINUX
@@ -176,6 +179,7 @@ void DataEntry::setupDataEntry()
     ui->frame_2->setMinimumWidth(fmFrame2.width(ui->establishmentLabel->text()) * 2.5);
 
     ui->coordinateUncertaintyInMetersBox->lineEdit()->setAlignment(Qt::AlignHCenter);
+    ui->photographer->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->copyrightOwner->lineEdit()->setAlignment(Qt::AlignHCenter);
     ui->usageTermsBox->lineEdit()->setAlignment(Qt::AlignHCenter);
 
@@ -5086,7 +5090,7 @@ void DataEntry::on_schemeButton_clicked()
     schemeForm.addRow(new QLabel("Enter the namespace, the text you want to prepend to each organism ID, and\n" \
                                  "the next number to assign to a new ID.\n\n" \
                                  "If the namespace is left blank 'org-' plus the photographer's ID is used.\n" \
-                                 "If both the 'Text to Prepend' and 'Next number' fields are blank then an ID is\n" \
+                                 "If both the 'Text to prepend' and 'Next number' fields are blank then an ID is\n" \
                                  "automatically assign based on the last 5 characters of one of that organism's\n" \
                                  "images. If that ID is not available, an unused ID is found and used."));
 
