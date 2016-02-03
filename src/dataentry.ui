@@ -2015,7 +2015,6 @@
               <height>298</height>
              </rect>
             </property>
-            <zorder></zorder>
            </widget>
           </widget>
          </item>
@@ -2125,7 +2124,7 @@
                <number>0</number>
               </property>
               <item>
-               <spacer name="verticalSpacer_4">
+               <spacer name="verticalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
