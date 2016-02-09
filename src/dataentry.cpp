@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2016 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -456,7 +456,7 @@ void DataEntry::runExifTool()
     if (qry.next())
         exifLocation = qry.value(0).toString();
 
-    QString exifParams = "-c \%+.6f -filename -datetimeoriginal -focallength -gpslatitude -gpslongitude -gpsaltitude -imagewidth -imageheight -createdate -modifydate -filemodifydate -T";
+    QString exifParams = "-c \%+.6f -filename -datetimeoriginal -focallength -gpslatitude -gpslongitude -gpsaltitude -imagewidth -imageheight -createdate -modifydate -filemodifydate -Orientation -n -T";
     QString exifCmd = "\"" + exifLocation + "\" " + filesToScan + exifParams;
 
     ps.start(exifCmd);
@@ -471,7 +471,7 @@ void DataEntry::exifToolFinished()
     }
     else
     {
-        // parse and store exifOutput's 11 columns of tab-delimited data
+        // parse and store exifOutput's 12 columns of tab-delimited data
 
         QStringList rowsExifOutput = exifOutput.split("\n");
         rowsExifOutput.removeAll("");
@@ -483,7 +483,7 @@ void DataEntry::exifToolFinished()
         for(QString &row : rowsExifOutput)
         {
             QStringList columns = row.split("\t");
-            if (columns.size() == 11)
+            if (columns.size() == 12)
             {
                 if(columns.at(0).isNull() || columns.at(0).isEmpty())
                 {
@@ -569,8 +569,20 @@ void DataEntry::exifToolFinished()
                     newImage.altitudeInMeters = ele.replace(" m Above Sea Level","");
                     newImage.altitudeInMeters = QString::number(qRound(newImage.altitudeInMeters.toDouble()));
                 }
-                newImage.width = columns.at(6);
-                newImage.height = columns.at(7);
+
+                QString rotStr = columns.at(11);
+                int rot = rotStr.toInt();
+                // if the image has a 90 or 270 degree rotation set in EXIF, fix pixel x,y values
+                if (5 <= rot && rot <= 8)
+                {
+                    newImage.height = columns.at(6);
+                    newImage.width = columns.at(7);
+                }
+                else
+                {
+                    newImage.width = columns.at(6);
+                    newImage.height = columns.at(7);
+                }
                 if (newImage.decimalLatitude != "")
                     newImage.coordinateUncertaintyInMeters = "10";
 
@@ -846,6 +858,7 @@ void DataEntry::iconify(const QStringList &imageFileNames)
             QSize fullSize = imageReader.size();
             int wid = fullSize.width();
             int hei = fullSize.height();
+            imageReader.setAutoTransform(true);
 
             if (wid == hei)
             {
@@ -951,85 +964,98 @@ void DataEntry::refreshImageLabel()
     int numSelect = itemList.count();
     ui->nSelectedLabel->setText(QString::number(numSelect)+ " selected");
 
-    if (numSelect >= 1)
+    if (numSelect < 1)
+        return;
+
+    QString fileName = imageHash.value(itemList.at(0)->text());
+    if (fileName.isEmpty())
+        return;
+
+    scaleFactor = 1;
+    int w = ui->scrollArea->width();
+    int h = ui->scrollArea->height();
+
+    QString fileToRead = fileName;
+    QFileInfo fileInfo(fileToRead);
+    // use the thumbnail if no other image can be found
+    if (!fileInfo.isFile())
     {
-        QString fileName = imageHash.value(itemList.at(0)->text());
-        if (!fileName.isEmpty())
-        {
-            scaleFactor = 1;
-            int w = ui->scrollArea->width();
-            int h = ui->scrollArea->height();
+        // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
+        if (w > 300)
+            w = 300;
+        if (h > 300)
+            h = 300;
 
-            QString fileToRead = fileName;
-            QFileInfo fileInfo(fileToRead);
-            // use the thumbnail if no other image can be found
-            if (!fileInfo.isFile())
-            {
-                // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
-                if (w > 300)
-                    w = 300;
-                if (h > 300)
-                    h = 300;
+        QPixmap pscaled;
+        pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        imageLabel->resize(w,h);
+        imageLabel->setPixmap(pscaled);
+        return;
+    }
 
-                QPixmap pscaled;
-                pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                imageLabel->resize(w,h);
-                imageLabel->setPixmap(pscaled);
-                return;
-            }
+    QImageReader imageReader(fileToRead);
+    imageReader.setAutoTransform(true);
+    imageReader.setScaledSize(QSize(w,h));
+    QSize fullSize = imageReader.size();
+    int wid;
+    int hei;
 
-            QImageReader imageReader(fileToRead);
-            imageReader.setScaledSize(QSize(w,h));
-            QSize fullSize = imageReader.size();
-            int wid = fullSize.width();
-            int hei = fullSize.height();
+    // the width and height reported by QImageReader::size() depend upon image orientation
+    if (imageReader.transformation() & QImageIOHandler::TransformationRotate90)
+    {
+        hei = fullSize.width();
+        wid = fullSize.height();
+    }
+    else
+    {
+        wid = fullSize.width();
+        hei = fullSize.height();
+    }
 
-            int setW;
-            int setH;
+    int setW;
+    int setH;
 
-            if (w == h && wid == hei)
-            {
-                setH = h;
-                setW = w;
-            }
-            else if (float(wid)/hei > float(w)/h)
-            {
-                setH = (w*hei)/wid;
-                setW = w;
-            }
-            else
-            {
-                setH = h;
-                setW = (h*wid)/hei;
-            }
+    if (w == h && wid == hei)
+    {
+        setH = h;
+        setW = w;
+    }
+    else if (float(wid)/hei > float(w)/h)
+    {
+        setH = (w*hei)/wid;
+        setW = w;
+    }
+    else
+    {
+        setH = h;
+        setW = (h*wid)/hei;
+    }
 
-            imageReader.setScaledSize(QSize(setW,setH));
+    imageReader.setScaledSize(QSize(setW,setH));
 
-            if (imageReader.canRead())
-            {
-                QImage img = imageReader.read();
-                QPixmap pscaled;
-                pscaled = pscaled.fromImage(img);
-                imageLabel->resize(setW,setH);
-                imageLabel->setPixmap(pscaled);
-            }
-            else
-            {
-                qDebug() << __LINE__  << "Could not load image from file: " + fileName;
-                // use the thumbnail instead
-                // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
-                if (w > 300)
-                    w = 300;
-                if (h > 300)
-                    h = 300;
+    if (imageReader.canRead())
+    {
+        QImage img = imageReader.read();
+        QPixmap pscaled;
+        pscaled = pscaled.fromImage(img);
+        imageLabel->resize(setW,setH);
+        imageLabel->setPixmap(pscaled);
+    }
+    else
+    {
+        qDebug() << __LINE__  << "Could not load image from file: " + fileName;
+        // use the thumbnail instead
+        // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
+        if (w > 300)
+            w = 300;
+        if (h > 300)
+            h = 300;
 
-                QPixmap pscaled;
-                pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                imageLabel->resize(w,h);
-                imageLabel->setPixmap(pscaled);
-                return;
-            }
-        }
+        QPixmap pscaled;
+        pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        imageLabel->resize(w,h);
+        imageLabel->setPixmap(pscaled);
+        return;
     }
 }
 
@@ -3406,15 +3432,94 @@ void DataEntry::resizeEvent(QResizeEvent *)
     {
         scaleFactor = 1;
         imageLabel->resize(imageLabel->pixmap()->size());
+
         QString fileName = imageHash.value(itemList.at(0)->text());
         if (!fileName.isEmpty()) {
-            QImage image(fileName);
-            if (image.isNull()) return;
-            QPixmap p = QPixmap::fromImage(image);
-            int w = imageLabel->width();
-            int h = imageLabel->height();
-            QPixmap pscaled = p.scaled(w,h, Qt::KeepAspectRatio);
-            imageLabel->setPixmap(pscaled);
+            int w = ui->scrollArea->width();
+            int h = ui->scrollArea->height();
+
+            QString fileToRead = fileName;
+            QFileInfo fileInfo(fileToRead);
+            // use the thumbnail if no other image can be found
+            if (!fileInfo.isFile())
+            {
+                // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
+                if (w > 300)
+                    w = 300;
+                if (h > 300)
+                    h = 300;
+
+                QPixmap pscaled;
+                pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                imageLabel->resize(w,h);
+                imageLabel->setPixmap(pscaled);
+            }
+            else
+            {
+                QImageReader imageReader(fileToRead);
+                imageReader.setAutoTransform(true);
+                imageReader.setScaledSize(QSize(w,h));
+                QSize fullSize = imageReader.size();
+                int wid;
+                int hei;
+
+                // the width and height reported by QImageReader::size() depend upon image orientation
+                if (imageReader.transformation() & QImageIOHandler::TransformationRotate90)
+                {
+                    hei = fullSize.width();
+                    wid = fullSize.height();
+                }
+                else
+                {
+                    wid = fullSize.width();
+                    hei = fullSize.height();
+                }
+
+                int setW;
+                int setH;
+
+                if (w == h && wid == hei)
+                {
+                    setH = h;
+                    setW = w;
+                }
+                else if (float(wid)/hei > float(w)/h)
+                {
+                    setH = (w*hei)/wid;
+                    setW = w;
+                }
+                else
+                {
+                    setH = h;
+                    setW = (h*wid)/hei;
+                }
+
+                imageReader.setScaledSize(QSize(setW,setH));
+
+                if (imageReader.canRead())
+                {
+                    QImage img = imageReader.read();
+                    QPixmap pscaled;
+                    pscaled = pscaled.fromImage(img);
+                    imageLabel->resize(setW,setH);
+                    imageLabel->setPixmap(pscaled);
+                }
+                else
+                {
+                    qDebug() << __LINE__ << "Could not load image from file: " + fileName;
+                    // use the thumbnail instead
+                    // limit dimensions to 300x300 to somewhat reduce pixelation due to upscaling
+                    if (w > 300)
+                        w = 300;
+                    if (h > 300)
+                        h = 300;
+
+                    QPixmap pscaled;
+                    pscaled = itemList.at(0)->icon().pixmap(100,100).scaled(w,h,Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    imageLabel->resize(w,h);
+                    imageLabel->setPixmap(pscaled);
+                }
+            }
         }
     }
 
@@ -3521,10 +3626,23 @@ void DataEntry::on_nextButton_clicked()
             }
 
             QImageReader imageReader(fileToRead);
+            imageReader.setAutoTransform(true);
             imageReader.setScaledSize(QSize(w,h));
             QSize fullSize = imageReader.size();
-            int wid = fullSize.width();
-            int hei = fullSize.height();
+            int wid;
+            int hei;
+
+            // the width and height reported by QImageReader::size() depend upon image orientation
+            if (imageReader.transformation() & QImageIOHandler::TransformationRotate90)
+            {
+                hei = fullSize.width();
+                wid = fullSize.height();
+            }
+            else
+            {
+                wid = fullSize.width();
+                hei = fullSize.height();
+            }
 
             int setW;
             int setH;
@@ -3618,10 +3736,23 @@ void DataEntry::on_previousButton_clicked()
             }
 
             QImageReader imageReader(fileToRead);
+            imageReader.setAutoTransform(true);
             imageReader.setScaledSize(QSize(w,h));
             QSize fullSize = imageReader.size();
-            int wid = fullSize.width();
-            int hei = fullSize.height();
+            int wid;
+            int hei;
+
+            // the width and height reported by QImageReader::size() depend upon image orientation
+            if (imageReader.transformation() & QImageIOHandler::TransformationRotate90)
+            {
+                hei = fullSize.width();
+                wid = fullSize.height();
+            }
+            else
+            {
+                wid = fullSize.width();
+                hei = fullSize.height();
+            }
 
             int setW;
             int setH;

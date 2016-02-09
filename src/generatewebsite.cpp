@@ -300,8 +300,20 @@ void GenerateWebsite::on_resizeImagesButton_clicked()
 
         QImageReader imageReader(fileToRead);
         QSize fullSize = imageReader.size();
-        int wid = fullSize.width();
-        int hei = fullSize.height();
+        int wid;
+        int hei;
+
+        // the width and height reported by QImageReader::size() depend upon image orientation
+        if (imageReader.transformation() & QImageIOHandler::TransformationRotate90)
+        {
+            hei = fullSize.width();
+            wid = fullSize.height();
+        }
+        else
+        {
+            wid = fullSize.width();
+            hei = fullSize.height();
+        }
 
         if (wid < 1024 && hei < 1024)
         {
