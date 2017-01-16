@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     editexisting.cpp \
     newagentdialog.cpp \
     agent.cpp \
-    generatewebsite.cpp \
     newdeterminationdialog.cpp \
     geonamesother.cpp \
     advancedthumbnailfilter.cpp \
@@ -34,7 +33,8 @@ SOURCES += main.cpp\
     managecsvs.cpp \
     dataentry.cpp \
     organism.cpp \
-    processnewimages.cpp
+    processnewimages.cpp \
+    advancedoptions.cpp
 
 HEADERS  += startwindow.h \
     help.h \
@@ -44,7 +44,6 @@ HEADERS  += startwindow.h \
     editexisting.h \
     newagentdialog.h \
     agent.h \
-    generatewebsite.h \
     newdeterminationdialog.h \
     geonamesother.h \
     advancedthumbnailfilter.h \
@@ -57,20 +56,21 @@ HEADERS  += startwindow.h \
     managecsvs.h \
     dataentry.h \
     organism.h \
-    processnewimages.h
+    processnewimages.h \
+    advancedoptions.h
 
 FORMS    += startwindow.ui \
     help.ui \
     editexisting.ui \
     newagentdialog.ui \
-    generatewebsite.ui \
     newdeterminationdialog.ui \
     geonamesother.ui \
     advancedthumbnailfilter.ui \
     newsensudialog.ui \
     managecsvs.ui \
     dataentry.ui \
-    processnewimages.ui
+    processnewimages.ui \
+    advancedoptions.ui
 
 RESOURCES += \
     BioCM.qrc

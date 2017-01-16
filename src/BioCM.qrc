@@ -11,9 +11,9 @@
         <file>help/overview.html</file>
         <file>help/about.html</file>
         <file>noimage.jpg</file>
-        <file>help/view_edit_existing.html</file>
         <file>icon.ico</file>
         <file>help/manage_csvs.html</file>
-        <file>help/generate_website.html</file>
+        <file>help/advanced_options.html</file>
+        <file>help/edit_existing.html</file>
     </qresource>
 </RCC>

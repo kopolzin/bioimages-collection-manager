@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -66,9 +66,9 @@ StartWindow::StartWindow(QWidget *parent) :
 
     ui->addNewImagesButton->setAutoDefault(true);
     ui->editExistingRecordsButton->setAutoDefault(true);
-    ui->HelpButton->setAutoDefault(true);
+    ui->helpButton->setAutoDefault(true);
     ui->manageCSVsButton->setAutoDefault(true);
-    ui->generateWebsiteButton->setAutoDefault(true);
+    ui->advancedButton->setAutoDefault(true);
 
     this->show();
     this->activateWindow();
@@ -150,10 +150,10 @@ void StartWindow::resizeEvent(QResizeEvent *)
 
     ui->addNewImagesButton->setFixedWidth(buttonW);
     ui->editExistingRecordsButton->setFixedWidth(buttonW);
-    ui->HelpButton->setFixedWidth(buttonW);
+    ui->helpButton->setFixedWidth(buttonW);
     ui->bioimagesLogo->setFixedWidth(buttonW);
     ui->manageCSVsButton->setFixedWidth(buttonW);
-    ui->generateWebsiteButton->setFixedWidth(buttonW);
+    ui->advancedButton->setFixedWidth(buttonW);
     if (!screenPosLoaded)
         return;
 
@@ -208,10 +208,10 @@ void StartWindow::changeEvent(QEvent* event)
 
         ui->addNewImagesButton->setFixedWidth(buttonW);
         ui->editExistingRecordsButton->setFixedWidth(buttonW);
-        ui->HelpButton->setFixedWidth(buttonW);
+        ui->helpButton->setFixedWidth(buttonW);
         ui->bioimagesLogo->setFixedWidth(buttonW);
         ui->manageCSVsButton->setFixedWidth(buttonW);
-        ui->generateWebsiteButton->setFixedWidth(buttonW);
+        ui->advancedButton->setFixedWidth(buttonW);
     }
 }
 
@@ -234,7 +234,7 @@ void StartWindow::on_editExistingRecordsButton_clicked()
     editExistingWindow->setup();
 }
 
-void StartWindow::on_HelpButton_clicked()
+void StartWindow::on_helpButton_clicked()
 {
     // switch to Help window
     if (help_w.isNull())
@@ -260,27 +260,27 @@ void StartWindow::on_manageCSVsButton_clicked()
     manageCSVs->show();
 }
 
-void StartWindow::on_generateWebsiteButton_clicked()
+void StartWindow::on_advancedButton_clicked()
 {
-    generateWebsite = new GenerateWebsite();
-    connect(generateWebsite,SIGNAL(windowClosed()),this,SLOT(closeGenerateWebsite()));
+    advancedOptions = new AdvancedOptions();
+    connect(advancedOptions,SIGNAL(windowClosed()),this,SLOT(closeAdvanced()));
     this->hide();
-    generateWebsite->show();
+    advancedOptions->show();
 }
 
 void StartWindow::resetEditExistingButton()
 {
-    ui->editExistingRecordsButton->setText("View/Edit\nExisting\nRecords");
+    ui->editExistingRecordsButton->setText("Edit Existing\nRecords");
 }
 
 void StartWindow::resetManageCSVsButton()
 {
-    ui->manageCSVsButton->setText("Merge\nRecord\nFiles");
+    ui->manageCSVsButton->setText("Manage\nCSVs");
 }
 
-void StartWindow::resetGenerateWebsiteButton()
+void StartWindow::resetAdvancedButton()
 {
-    ui->generateWebsiteButton->setText("Generate\nBioimages\nWebsite");
+    ui->advancedButton->setText("Advanced\nOptions");
 }
 
 void StartWindow::closeAddNew()
@@ -307,9 +307,9 @@ void StartWindow::closeManageCSVs()
     this->raise();
 }
 
-void StartWindow::closeGenerateWebsite()
+void StartWindow::closeAdvanced()
 {
-    generateWebsite->deleteLater();
+    advancedOptions->deleteLater();
     this->show();
     this->activateWindow();
     this->raise();

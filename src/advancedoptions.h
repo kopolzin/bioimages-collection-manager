@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef GENERATEWEBSITE_H
-#define GENERATEWEBSITE_H
+#ifndef ADVANCEDOPTIONS_H
+#define ADVANCEDOPTIONS_H
 
 #include <QWidget>
 #include <QProgressDialog>
@@ -33,16 +33,16 @@
 #include "sensu.h"
 
 namespace Ui {
-class GenerateWebsite;
+class AdvancedOptions;
 }
 
-class GenerateWebsite : public QWidget
+class AdvancedOptions : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit GenerateWebsite(QWidget *parent = 0);
-    ~GenerateWebsite();
+    explicit AdvancedOptions(QWidget *parent = 0);
+    ~AdvancedOptions();
 
 signals:
     void windowClosed();
@@ -54,7 +54,7 @@ private slots:
     void on_backButton_clicked();
 
 private:
-    Ui::GenerateWebsite *ui;
+    Ui::AdvancedOptions *ui;
     QStringList selectImages();
     void loadAgents();
 
@@ -71,4 +71,4 @@ private:
     QStringList imagesToResize;
 };
 
-#endif // GENERATEWEBSITE_H
+#endif // ADVANCEDOPTIONS_H

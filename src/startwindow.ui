@@ -215,7 +215,7 @@
         </widget>
        </item>
        <item row="0" column="3">
-        <widget class="QPushButton" name="HelpButton">
+        <widget class="QPushButton" name="helpButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -272,7 +272,7 @@ CSVs</string>
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QPushButton" name="generateWebsiteButton">
+        <widget class="QPushButton" name="advancedButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -295,9 +295,8 @@ CSVs</string>
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Generate
-Bioimages
-Website</string>
+          <string>Advanced
+Options</string>
          </property>
         </widget>
        </item>
@@ -354,8 +353,7 @@ New Images</string>
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>View/Edit
-Existing
+          <string>Edit Existing
 Records</string>
          </property>
         </widget>
@@ -383,9 +381,9 @@ Records</string>
  <tabstops>
   <tabstop>addNewImagesButton</tabstop>
   <tabstop>editExistingRecordsButton</tabstop>
-  <tabstop>HelpButton</tabstop>
+  <tabstop>helpButton</tabstop>
   <tabstop>manageCSVsButton</tabstop>
-  <tabstop>generateWebsiteButton</tabstop>
+  <tabstop>advancedButton</tabstop>
  </tabstops>
  <resources>
   <include location="BioCM.qrc"/>

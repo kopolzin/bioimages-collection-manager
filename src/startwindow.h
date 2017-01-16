@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 #include "help.h"
 #include "managecsvs.h"
 #include "mergetables.h"
-#include "generatewebsite.h"
+#include "advancedoptions.h"
 
 namespace Ui {
 class StartWindow;
@@ -47,10 +47,10 @@ public:
 
 private slots:
     void on_addNewImagesButton_clicked();
-    void on_HelpButton_clicked();
+    void on_helpButton_clicked();
     void on_editExistingRecordsButton_clicked();
     void on_manageCSVsButton_clicked();
-    void on_generateWebsiteButton_clicked();
+    void on_advancedButton_clicked();
 
     void resizeEvent(QResizeEvent *);
     void changeEvent(QEvent*event);
@@ -60,12 +60,12 @@ private slots:
 
     void resetEditExistingButton();
     void resetManageCSVsButton();
-    void resetGenerateWebsiteButton();
+    void resetAdvancedButton();
 
     void closeAddNew();
     void closeEditExisting();
     void closeManageCSVs();
-    void closeGenerateWebsite();
+    void closeAdvanced();
 
     void on_updatesAvailable_clicked();
     void cancelDownload();
@@ -81,7 +81,7 @@ private:
     EditExisting *editExistingWindow;
     QPointer<Help> help_w;
     ManageCSVs *manageCSVs;
-    GenerateWebsite *generateWebsite;
+    AdvancedOptions *advancedOptions;
 
     QString databaseVersion;
     void checkCSVUpdate();

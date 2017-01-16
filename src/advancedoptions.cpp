@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,12 @@
 #include <QSqlQuery>
 
 #include "startwindow.h"
-#include "generatewebsite.h"
-#include "ui_generatewebsite.h"
+#include "advancedoptions.h"
+#include "ui_advancedoptions.h"
 
-GenerateWebsite::GenerateWebsite(QWidget *parent) :
+AdvancedOptions::AdvancedOptions(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::GenerateWebsite)
+    ui(new Ui::AdvancedOptions)
 {
     ui->setupUi(this);
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
@@ -58,14 +58,14 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
     baseFolder = "";
 
     qry.prepare("SELECT value FROM settings WHERE setting = (?)");
-    qry.addBindValue("view.generatewebsite.location");
+    qry.addBindValue("view.advancedoptions.location");
     qry.exec();
     if (qry.next())
         restoreGeometry(qry.value(0).toByteArray());
 
     bool wasMaximized = false;
     qry.prepare("SELECT value FROM settings WHERE setting = (?)");
-    qry.addBindValue("view.generatewebsite.fullscreen");
+    qry.addBindValue("view.advancedoptions.fullscreen");
     qry.exec();
     if (qry.next())
         wasMaximized = qry.value(0).toBool();
@@ -77,40 +77,40 @@ GenerateWebsite::GenerateWebsite(QWidget *parent) :
 
     if (!db.commit())
     {
-        qDebug() << "In GenerateWebsite(): Problem querying database.";
+        qDebug() << "In AdvancedOptions(): Problem querying database.";
         db.rollback();
     }
 }
 
-GenerateWebsite::~GenerateWebsite()
+AdvancedOptions::~AdvancedOptions()
 {
     delete ui;
 }
 
 
-void GenerateWebsite::resizeEvent(QResizeEvent *)
+void AdvancedOptions::resizeEvent(QResizeEvent *)
 {
     if (!screenPosLoaded)
         return;
     QSqlQuery qry;
     qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
-    qry.addBindValue("view.generatewebsite.location");
+    qry.addBindValue("view.advancedoptions.location");
     qry.addBindValue(saveGeometry());
     qry.exec();
 }
 
-void GenerateWebsite::moveEvent(QMoveEvent *)
+void AdvancedOptions::moveEvent(QMoveEvent *)
 {
     if (!screenPosLoaded)
         return;
     QSqlQuery qry;
     qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
-    qry.addBindValue("view.generatewebsite.location");
+    qry.addBindValue("view.advancedoptions.location");
     qry.addBindValue(saveGeometry());
     qry.exec();
 }
 
-void GenerateWebsite::changeEvent(QEvent* event)
+void AdvancedOptions::changeEvent(QEvent* event)
 {
     if (!screenPosLoaded)
         return;
@@ -123,13 +123,13 @@ void GenerateWebsite::changeEvent(QEvent* event)
 
         QSqlQuery qry;
         qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
-        qry.addBindValue("view.generatewebsite.fullscreen");
+        qry.addBindValue("view.advancedoptions.fullscreen");
         qry.addBindValue(isMax);
         qry.exec();
     }
 }
 
-QStringList GenerateWebsite::selectImages()
+QStringList AdvancedOptions::selectImages()
 {
     QStringList filesToLoad;
 
@@ -145,7 +145,7 @@ QStringList GenerateWebsite::selectImages()
     return filesToLoad;
 }
 
-void GenerateWebsite::on_selectImagesButton_clicked()
+void AdvancedOptions::on_selectImagesButton_clicked()
 {
 
     imagesToResize = selectImages();
@@ -158,7 +158,7 @@ void GenerateWebsite::on_selectImagesButton_clicked()
         ui->numImagesToResize->setText("0 selected");
 }
 
-void GenerateWebsite::on_baseFolderButton_clicked()
+void AdvancedOptions::on_baseFolderButton_clicked()
 {
 
     if (baseFolder.isEmpty())
@@ -177,7 +177,7 @@ void GenerateWebsite::on_baseFolderButton_clicked()
     baseFolder = folder;
 }
 
-void GenerateWebsite::loadAgents()
+void AdvancedOptions::loadAgents()
 {
     agentHash.clear();
 
@@ -225,7 +225,7 @@ void GenerateWebsite::loadAgents()
     ui->agentBox->view()->setMinimumWidth(ui->agentBox->minimumSizeHint().width());
 }
 
-void GenerateWebsite::on_resizeImagesButton_clicked()
+void AdvancedOptions::on_resizeImagesButton_clicked()
 {
     photographer = ui->agentBox->currentText();
 
@@ -395,7 +395,7 @@ void GenerateWebsite::on_resizeImagesButton_clicked()
 
 }
 
-void GenerateWebsite::on_backButton_clicked()
+void AdvancedOptions::on_backButton_clicked()
 {
     this->hide();
     emit windowClosed();

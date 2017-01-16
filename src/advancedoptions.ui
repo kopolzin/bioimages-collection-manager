@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GenerateWebsite</class>
- <widget class="QWidget" name="GenerateWebsite">
+ <class>AdvancedOptions</class>
+ <widget class="QWidget" name="AdvancedOptions">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Generate Website</string>
+   <string>Advanced Options</string>
   </property>
   <property name="windowIcon">
    <iconset resource="BioCM.qrc">

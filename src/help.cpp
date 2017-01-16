@@ -36,7 +36,7 @@ Help::Help(QWidget *parent) :
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
 
     QStringList indexList;
-    indexList << "Overview" << "Start Screen" << "Process New Images" << "View/Edit Existing Records" << "Data Entry" << "Manage CSVs" << "Generate Website" << "About";
+    indexList << "Overview" << "Start Screen" << "Process New Images" << "Edit Existing Records" << "Data Entry" << "Manage CSVs" << "Advanced Options" << "About";
     ui->helpIndex->addItems(indexList);
 
 #ifdef Q_OS_MAC
@@ -50,7 +50,7 @@ Help::Help(QWidget *parent) :
 #endif
 
     QFontMetrics fmIndex(ui->helpIndex->font());
-    ui->helpIndex->setMinimumWidth(fmIndex.width("View/Edit Existing Records") + 15);
+    ui->helpIndex->setMinimumWidth(fmIndex.width("Edit Existing Records") + 15);
 
     connect(ui->helpIndex,SIGNAL(itemSelectionChanged()),this,SLOT(updateTextBrowser()));\
     ui->textBrowser->setOpenExternalLinks(true);
@@ -95,7 +95,7 @@ void Help::select(const QString &selected)
     else if (selected == "Process New Images") {
         ui->helpIndex->setCurrentItem(ui->helpIndex->item(2));
     }
-    else if (selected == "View/Edit Existing Records") {
+    else if (selected == "Edit Existing Records") {
         ui->helpIndex->setCurrentItem(ui->helpIndex->item(3));
     }
     else if (selected == "Data Entry") {
@@ -104,7 +104,7 @@ void Help::select(const QString &selected)
     else if (selected == "Manage CSVs") {
         ui->helpIndex->setCurrentItem(ui->helpIndex->item(5));
     }
-    else if (selected == "Generate Website") {
+    else if (selected == "Advanced Options") {
         ui->helpIndex->setCurrentItem(ui->helpIndex->item(6));
     }
     else if (selected == "About") {
@@ -175,8 +175,8 @@ void Help::updateTextBrowser()
     else if (selectedText == "Process New Images") {
         helpContent = read(":/help/process_new_images.html");
     }
-    else if (selectedText == "View/Edit Existing Records") {
-        helpContent = read(":/help/view_edit_existing.html");
+    else if (selectedText == "Edit Existing Records") {
+        helpContent = read(":/help/edit_existing.html");
     }
     else if (selectedText == "Data Entry") {
         helpContent = read(":/help/data_entry.html");
@@ -184,8 +184,8 @@ void Help::updateTextBrowser()
     else if (selectedText == "Manage CSVs") {
         helpContent = read(":/help/manage_csvs.html");
     }
-    else if (selectedText == "Generate Website") {
-        helpContent = read(":/help/generate_website.html");
+    else if (selectedText == "Advanced Options") {
+        helpContent = read(":/help/advanced_options.html");
     }
     else if (selectedText == "About") {
         helpContent = read(":/help/about.html");
