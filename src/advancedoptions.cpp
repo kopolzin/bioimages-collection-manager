@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSqlQuery>
+#include <QtSql>
 
 #include "startwindow.h"
 #include "advancedoptions.h"
@@ -399,4 +400,70 @@ void AdvancedOptions::on_backButton_clicked()
 {
     this->hide();
     emit windowClosed();
+}
+
+void AdvancedOptions::on_resetCheckbox_toggled(bool checked)
+{
+    ui->resetButton->setEnabled(checked);
+}
+
+void AdvancedOptions::on_resetButton_clicked()
+{
+    ui->resetButton->setEnabled(false);
+    ui->resetCheckbox->setChecked(false);
+    QCoreApplication::processEvents();
+
+    QStringList modTables;
+    QString age = "agents";
+    QString det = "determinations";
+    QString ima = "images";
+    QString org = "organisms";
+    QString sen = "sensu";
+    QString tax = "taxa";
+    QString pub = "pub_";
+    // delete all data tables except taxa, which is only partially on GitHub
+    modTables << age << det << ima << org << sen; // << tax
+
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+    for (auto t : modTables)
+    {
+        QSqlQuery dropQry;
+        dropQry.prepare("DELETE FROM " + t);
+        dropQry.exec();
+    }
+
+    // check for remote updates
+
+    // download remote updates, if any
+
+    // copy pub_ tables to agents, images, etc. tables
+    for (auto t : modTables)
+    {
+        QSqlQuery renameQry;
+        renameQry.prepare("INSERT INTO " + t + " SELECT * FROM " + pub + t);
+        renameQry.exec();
+    }
+
+    if (!db.commit())
+    {
+        qDebug() << __LINE__ << "Problem with transaction while resetting database";
+        db.rollback();
+    }
+    else
+    {
+        db.close();
+        db.open();
+        QSqlQuery query;
+        query.exec("VACUUM");
+    }
+
+    // reload agents list for resizing images
+    loadAgents();
+
+    // say everything's finished
+    QMessageBox msgBox;
+    msgBox.setText("The database has been reset. You may continue using the software.");
+    msgBox.exec();
+    return;
 }

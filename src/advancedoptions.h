@@ -52,6 +52,9 @@ private slots:
     void on_baseFolderButton_clicked();
     void on_resizeImagesButton_clicked();
     void on_backButton_clicked();
+    void on_resetCheckbox_toggled(bool checked);
+
+    void on_resetButton_clicked();
 
 private:
     Ui::AdvancedOptions *ui;

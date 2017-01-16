@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>400</height>
+    <width>420</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -23,19 +23,7 @@
    <iconset resource="BioCM.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="leftMargin">
-    <number>6</number>
-   </property>
-   <property name="topMargin">
-    <number>6</number>
-   </property>
-   <property name="rightMargin">
-    <number>6</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_10">
    <item>
     <spacer name="horizontalSpacer_10">
      <property name="orientation">
@@ -54,6 +42,115 @@
      <property name="spacing">
       <number>3</number>
      </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="resetLabel">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Reset Database</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="resetDescription">
+       <property name="text">
+        <string>This will reset the database to the last published version of Bioimages. All local changes will be lost. If you have entered metadata for images that you wish to save, go to the Manage CSVs screen and export the locally changed records to CSV first.
+
+To proceed with resetting the database, check the box and push the Reset button.</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <item>
+        <widget class="QCheckBox" name="resetCheckbox">
+         <property name="text">
+          <string>Yes, reset the database</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="resetButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Reset</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>5</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
@@ -109,7 +206,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>10</height>
+         <height>5</height>
         </size>
        </property>
       </spacer>
@@ -245,6 +342,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <pointsize>8</pointsize>
@@ -308,7 +411,7 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
+           <pointsize>9</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -344,7 +447,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>130</height>
+         <height>10</height>
         </size>
        </property>
       </spacer>
@@ -392,12 +495,12 @@
         <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::MinimumExpanding</enum>
+        <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>0</height>
+         <height>5</height>
         </size>
        </property>
       </spacer>
