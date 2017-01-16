@@ -603,6 +603,15 @@ void DataEntry::exifToolFinished()
 
                 QString newIdentifier = base.split(".").at(0).right(numTrailing);
                 newIdentifier = newIdentifier.remove(QRegExp("[^a-zA-Z\\d_-]"));
+                while (newIdentifier.startsWith("_") || newIdentifier.startsWith("-"))
+                {
+                    newIdentifier.remove(0,1);
+                }
+                if (newIdentifier.isEmpty())
+                {
+                    // just in case the identifier only contained dashes and underscores and we removed them all
+                    numTrailing = 0;
+                }
                 newIdentifier = "http://bioimages.vanderbilt.edu/" + nameSpace + "/" + newIdentifier;
 
                 // if the user set the numTrailing to 0 we do not want to attempt to use newIdentifier
