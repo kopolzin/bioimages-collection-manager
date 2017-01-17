@@ -60,7 +60,7 @@ StartWindow::StartWindow(QWidget *parent) :
     ui->bioimagesLogo->setScaledContents(true);
 
     ui->updatesAvailable->setAutoFillBackground(false);
-    ui->updatesAvailable->setHidden(true);
+    ui->updatesAvailable->setVisible(false);
     ui->updatesAvailable->setStyleSheet("QPushButton {color: yellow; background-color: black} "
                                         "QPushButton:pressed {background-color: yellow; color:black}");
 
@@ -69,6 +69,7 @@ StartWindow::StartWindow(QWidget *parent) :
     ui->helpButton->setAutoDefault(true);
     ui->manageCSVsButton->setAutoDefault(true);
     ui->advancedButton->setAutoDefault(true);
+    ui->addNewImagesButton->setFocus();
 
     this->show();
     this->activateWindow();
@@ -108,7 +109,10 @@ StartWindow::StartWindow(QWidget *parent) :
     {
         lastCSVCheck = findLastCSVCheck.value(0).toString();
         if (!lastCSVCheck.isEmpty())
+        {
             qDebug() << "Last CSV check was on " + lastCSVCheck;
+            ui->lastCheck->setText("Last check: " + lastCSVCheck);
+        }
     }
 
     findLastCSVCheck.prepare("SELECT value FROM settings WHERE setting = (?)");
@@ -118,7 +122,11 @@ StartWindow::StartWindow(QWidget *parent) :
     if (findLastCSVCheck.next())
     {
         if (findLastCSVCheck.value(0).toBool())
-            ui->updatesAvailable->setHidden(false);
+        {
+            ui->updatesAvailable->setVisible(true);
+            ui->checkUpdatesButton->setVisible(false);
+            ui->lastCheck->setVisible(false);
+        }
     }
 
     if (!db.commit())
@@ -619,11 +627,14 @@ void StartWindow::httpFinished()
                 node = node.nextSibling();
             }
 
+            QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd'T'hh:mm");
             QSqlQuery setLastCSVCheck;
             setLastCSVCheck.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
             setLastCSVCheck.addBindValue("metadata.lastcheck");
-            setLastCSVCheck.addBindValue(QDateTime::currentDateTime().toString("yyyy-MM-dd'T'hh:mm"));
+            setLastCSVCheck.addBindValue(now);
             setLastCSVCheck.exec();
+
+            ui->lastCheck->setText("Last check: " + now);
 
             // now get the time of the local CSVs (if any)
             QString downloadedVersion; // stores dcterms_modified of locally downloaded CSVs
@@ -676,7 +687,10 @@ void StartWindow::httpFinished()
             else if (lastPublished <= downloadedVersion && !downloadedVersion.isEmpty() && allCSVsPresent)
             {
                 qDebug() << "Not fetching files from GitHub. Local CSVs are already up to date.";
-                ui->updatesAvailable->setHidden(false);
+                ui->updatesAvailable->setVisible(true);
+                ui->updatesAvailable->setEnabled(true);
+                ui->checkUpdatesButton->setVisible(false);
+                ui->lastCheck->setVisible(false);
                 updatesAvailable = true;
             }
             else
@@ -688,7 +702,10 @@ void StartWindow::httpFinished()
                     xmlOut << xmlText;
                     downloadedVersionFile.close();
                 }
-                ui->updatesAvailable->setHidden(false);
+                ui->updatesAvailable->setVisible(true);
+                ui->updatesAvailable->setEnabled(true);
+                ui->checkUpdatesButton->setVisible(false);
+                ui->lastCheck->setVisible(false);
                 updatesAvailable = true;
             }
 
@@ -973,7 +990,9 @@ void StartWindow::on_updatesAvailable_clicked()
 
 void StartWindow::cleanup()
 {
-    ui->updatesAvailable->setHidden(true);
+    ui->updatesAvailable->setVisible(false);
+    ui->checkUpdatesButton->setVisible(true);
+    ui->lastCheck->setVisible(true);
 
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     QString dlPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data/CSVs";
@@ -1013,10 +1032,11 @@ void StartWindow::cleanup()
     // update metadata.version in settings table
     if (!lastPublished.isEmpty())
     {
+        databaseVersion = lastPublished;
         QSqlQuery qry;
         qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
         qry.addBindValue("metadata.version");
-        qry.addBindValue(lastPublished);
+        qry.addBindValue(databaseVersion);
         qry.exec();
     }
 
@@ -1041,4 +1061,9 @@ void StartWindow::cleanup()
     QString xmlFile = dlPath + "/last-downloaded.xml";
     if (QFile::exists(xmlFile))
         QFile::remove(xmlFile);
+}
+
+void StartWindow::on_checkUpdatesButton_clicked()
+{
+    checkCSVUpdate();
 }

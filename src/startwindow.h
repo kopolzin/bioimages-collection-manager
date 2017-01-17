@@ -72,6 +72,8 @@ private slots:
     void cleanup();
     void setupDB();
 
+    void on_checkUpdatesButton_clicked();
+
 private:
     Ui::StartWindow *ui;
     QString appPath;
