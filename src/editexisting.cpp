@@ -175,6 +175,10 @@ EditExisting::EditExisting(QWidget *parent) :
     ui->webQualityButton->setVisible(false);
     ui->goodQualityButton->setVisible(false);
     ui->fullQualityButton->setVisible(false);
+
+#ifndef Q_OS_MAC
+    ui->selectImageLocationButton->setFocus();
+#endif
 }
 
 void EditExisting::setup()
