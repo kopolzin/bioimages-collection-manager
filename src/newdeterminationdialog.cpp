@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@
 #include "newsensudialog.h"
 #include "ui_newdeterminationdialog.h"
 
-NewDeterminationDialog::NewDeterminationDialog(const QString &organismID, const QStringList &genera, const QStringList &commonNames, const QStringList &agents, const QStringList &sensus, QWidget *parent) :
+NewDeterminationDialog::NewDeterminationDialog(const QString &organismID, const QStringList &genera, const QStringList &commonNames, const QStringList &families, const QStringList &agents, const QStringList &sensus, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NewDeterminationDialog)
 {
@@ -52,11 +52,13 @@ NewDeterminationDialog::NewDeterminationDialog(const QString &organismID, const 
     allGenera = genera;
     allCommonNames = commonNames;
     allSensus = sensus;
+    allFamilies = families;
 
     completeGenera = new QCompleter(allGenera, this);
     completeGenera->setCaseSensitivity(Qt::CaseInsensitive);
     completeGenera->popup()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     completeGenera->popup()->setMinimumWidth(300);
+    completeGenera->popup()->setMinimumHeight(200);
     completeGenera->setFilterMode(Qt::MatchContains);
     ui->genusSearch->setCompleter(0);
 
@@ -64,8 +66,17 @@ NewDeterminationDialog::NewDeterminationDialog(const QString &organismID, const 
     completeCommonNames->setCaseSensitivity(Qt::CaseInsensitive);
     completeCommonNames->popup()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     completeCommonNames->popup()->setMinimumWidth(300);
+    completeCommonNames->popup()->setMinimumHeight(167);
     completeCommonNames->setFilterMode(Qt::MatchContains);
     ui->commonNameSearch->setCompleter(0);
+
+    completeFamilies = new QCompleter(allFamilies, this);
+    completeFamilies->setCaseSensitivity(Qt::CaseInsensitive);
+    completeFamilies->popup()->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    completeFamilies->popup()->setMinimumWidth(300);
+    completeFamilies->popup()->setMinimumHeight(134);
+    completeFamilies->setFilterMode(Qt::MatchContains);
+    ui->familySearch->setCompleter(0);
 
     QString agent = "";
     QSqlQuery qry;
@@ -160,6 +171,28 @@ void NewDeterminationDialog::on_commonNameSearch_textChanged(const QString &arg1
 
     // If the current text isn't recognized as a common name, do not set other taxonomic names
     if (!allCommonNames.contains(arg1,Qt::CaseInsensitive))
+        return;
+
+    tsnID = arg1.split(" ").last();
+    tsnID.remove("(");
+    tsnID.remove(")");
+    ui->tsnID->setText(tsnID);
+    setTaxaFromTSNID();
+}
+
+void NewDeterminationDialog::on_familySearch_textChanged(const QString &arg1)
+{
+    if (arg1.length() > 0 && arg1.length() < 3)
+    {
+        ui->familySearch->setCompleter(0);
+    }
+    else
+    {
+        ui->familySearch->setCompleter(completeFamilies);
+    }
+
+    // If the current text isn't recognized as a family name, do not set other taxonomic names
+    if (!allFamilies.contains(arg1,Qt::CaseInsensitive))
         return;
 
     tsnID = arg1.split(" ").last();

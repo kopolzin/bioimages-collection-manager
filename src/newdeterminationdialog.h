@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ class NewDeterminationDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewDeterminationDialog(const QString &organismID, const QStringList &allGenera,  const QStringList &allCommonNames, const QStringList &agents, const QStringList &sensus, QWidget *parent = 0);
+    explicit NewDeterminationDialog(const QString &organismID, const QStringList &allGenera,  const QStringList &allCommonNames, const QStringList &families, const QStringList &agents, const QStringList &sensus, QWidget *parent = 0);
     ~NewDeterminationDialog();
 
     Determination getDetermination();
@@ -45,6 +45,7 @@ public:
 private slots:
     void on_genusSearch_textChanged(const QString &arg1);
     void on_commonNameSearch_textChanged(const QString &arg1);
+    void on_familySearch_textChanged(const QString &arg1);
     void on_identifiedBy_currentTextChanged(const QString &arg1);
     void on_dateIdentified_textEdited(const QString &arg1);
     void on_nameAccordingToID_currentTextChanged(const QString &arg1);
@@ -68,9 +69,11 @@ private:
     void setTaxaFromTSNID();
     QPointer<QCompleter> completeGenera;
     QPointer<QCompleter> completeCommonNames;
+    QPointer<QCompleter> completeFamilies;
     QPointer<QCompleter> completeSensu;
     QStringList allGenera;
     QStringList allCommonNames;
+    QStringList allFamilies;
     bool sensuAdded;
     QStringList allSensus;
     QString modifiedNow();

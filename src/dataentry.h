@@ -189,6 +189,8 @@ private:
     QCompleter *completeSpecies;
     QStringList allCommonNames;
     QCompleter *completeCommonNames;
+    QStringList allFamilies;
+    QCompleter *completeFamilyNames;
     QStringList sensus;
     QCompleter *completeSensu;
     void setTaxaFromTSN(const QString &tsnID);

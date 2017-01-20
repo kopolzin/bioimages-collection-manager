@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -3383,6 +3383,7 @@ void DataEntry::loadUSDANames()
     allGenera.clear();
     allSpecies.clear();
     allCommonNames.clear();
+    allFamilies.clear();
 
     QSqlQuery query;
     query.setForwardOnly(true);
@@ -3391,6 +3392,7 @@ void DataEntry::loadUSDANames()
     while (query.next())
     {
         QString tsnID = query.value(0).toString();
+        QString family = query.value(4).toString();
         QString genus = query.value(5).toString();
         QString species = query.value(6).toString();
         QString infraspecific = query.value(7).toString();
@@ -3416,6 +3418,7 @@ void DataEntry::loadUSDANames()
             species.append(" " + infraspecific);
         }
 
+        family.append(" (" + tsnID + ")");
         species.append(" (" + tsnID + ")");
         genus.append(" (" + tsnID + ")");
         commonName.append(" (" + tsnID + ")");
@@ -3427,6 +3430,7 @@ void DataEntry::loadUSDANames()
         allGenera.append(genus);
         allSpecies.append(species);
         allCommonNames.append(commonName);
+        allFamilies.append(family);
     }
 }
 
@@ -3805,6 +3809,7 @@ void DataEntry::setupCompleters()
 {
     allGenera.sort(Qt::CaseInsensitive);
     allCommonNames.sort(Qt::CaseInsensitive);
+    allFamilies.sort(Qt::CaseInsensitive);
     sensus.sort(Qt::CaseInsensitive);
 
     completeSensu = new QCompleter(sensus, this);
@@ -6400,7 +6405,7 @@ void DataEntry::on_newDeterminationButton_clicked()
         msgBox.exec();
         return;
     }
-    NewDeterminationDialog determinationDialog(ui->organismID->text(), allGenera, allCommonNames, agents, sensus, this);
+    NewDeterminationDialog determinationDialog(ui->organismID->text(), allGenera, allCommonNames, allFamilies, agents, sensus, this);
     int dialogResult = determinationDialog.exec();
 
     if (determinationDialog.newSensu())
