@@ -11,8 +11,14 @@
       </div>
       <div id="bd"></div>
       <div id="ft">
-        <p>This screen provides advanced features that primarily only the website
-        administrator for Bioimages will have use for.</p>
+        <p>This screen provides advanced features. Resetting the database may be useful
+        for users but the other features on this screen are primarily for the website
+        administrator of Bioimages.</p>
+        <h3>Reset database</h3>
+        <p>If you wish to undo all changes you've made and reset the database to factory
+        defaults, you're in the right place. This method of resetting the database is
+        an easier alternative to uninstalling and reinstalling the software.</p>
+        <p>To procede, tick the checkbox then click the Reset button.</p>
         <h3>Resize images</h3>
         <p>A function is provided to resize the full-size images down to the
           various resolutions used on the Bioimages website. When resized to
@@ -25,10 +31,19 @@
           folders: &lt;base_output_directory&gt;/tn/&lt;namespace&gt;/,
           &lt;base_output_directory&gt;/lq/&lt;namespace&gt;/, and
           &lt;base_output_directory&gt;/gq/&lt;namespace&gt;/.</p>
-        <h3>Generate Bioimages website</h3>
-        <p>Generation of the website from the metadata records is now
-          handled by XQuery scripts available at <a href="https://github.com/baskaufs/Bioimages">
-          https://github.com/baskaufs/Bioimages</a>.</p>
+        <h3>Extract and convert taxonomic names from ITIS</h3>
+        <p>This software uses taxonomic data from ITIS. The data are bundled with the
+          software so there is no need for the user to install anything. This function
+          is for the software developer to easily update to the latest ITIS dataset,
+          which is released monthly.</p>
+          <p>The process is simple. First, download the most recent dataset and extract
+          it. The direct download link is <a href="https://www.itis.gov/downloads/itisSqlite.zip">
+          https://www.itis.gov/downloads/itisSqlite.zip</a>. Then click the
+          "Select ITIS database and convert" button and select the extracted ITIS.sqlite file.
+          The software will then load the database and convert it to use our schemas. This
+          may take a few minutes due to its large size. Afterward, the ITIS.sqlite database
+          will contain a table 'taxa' which can be used by this software as a source of
+          taxonomic names, or it may first be filtered down with SQL commands to the desired hierarchies.</p>
       </div>
     </div>
   </body>
