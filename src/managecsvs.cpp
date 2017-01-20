@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -934,30 +934,104 @@ void ManageCSVs::on_selectCSVFolderButton_clicked()
         db.rollback();
     }
 
-    CSVFolder = QFileDialog::getExistingDirectory(this,"Select directory containing CSV files",CSVFolder,QFileDialog::DontUseNativeDialog);
+//    CSVFolder = QFileDialog::getExistingDirectory(this,"Select directory containing CSV files",CSVFolder,QFileDialog::DontUseNativeDialog);
+//    if (CSVFolder == "")
+//        return;
 
-    if (CSVFolder == "")
+    selectedCSVs = QFileDialog::getOpenFileNames(this,"Select CSV files to import",CSVFolder,"CSVs (*.csv)");
+    if (selectedCSVs.isEmpty())
         return;
+
+    CSVFolder = QFileInfo(selectedCSVs.first()).absolutePath();
 
     qry.prepare("INSERT OR REPLACE INTO settings (setting, value) VALUES (?, ?)");
     qry.addBindValue("path.updateCSVfolder");
     qry.addBindValue(CSVFolder);
     qry.exec();
 
-    ImportCSV importCSV;
-    importCSV.extractImageNames(CSVFolder + "/images.csv", "tmp_images");
-    importCSV.extractDeterminations(CSVFolder + "/determinations.csv", "tmp_determinations");
-    importCSV.extractAgents(CSVFolder + "/agents.csv", "tmp_agents");
-    importCSV.extractOrganisms(CSVFolder + "/organisms.csv", "tmp_organisms");
-    importCSV.extractSensu(CSVFolder + "/sensu.csv", "tmp_sensu");
-    importCSV.extractTaxa(CSVFolder + "/names.csv", "tmp_taxa");
+    // alternate method of importing with user interaction on conflicts
+//    importMergeQueue();
+//    return;
 
-    QPointer<MergeTables> importedCSVMerge = new MergeTables();
-    connect(importedCSVMerge,SIGNAL(finished()),this,SLOT(cleanuptmp()));
-    connect(importedCSVMerge,SIGNAL(canceled()),this,SLOT(cleanuptmp()));
-    importedCSVMerge->setAttribute(Qt::WA_DeleteOnClose);
+    QPointer<QMessageBox> importingMsg = new QMessageBox;
+    importingMsg->setAttribute(Qt::WA_DeleteOnClose);
+    for (auto child : importingMsg->findChildren<QDialogButtonBox *>())
+        child->hide();
+    importingMsg->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+    QString importMsgStr = "Please wait while the following file is imported:\n";
+    if (selectedCSVs.size() > 1)
+        importMsgStr = "Please wait while the following files are imported:\n";
+    foreach (QString csvPath, selectedCSVs)
+    {
+        importMsgStr = importMsgStr + "\n- " + QFileInfo(csvPath).fileName();
+    }
+    importingMsg->setText(importMsgStr);
+    importingMsg->setModal(true);
+    importingMsg->show();
     QCoreApplication::processEvents();
-    importedCSVMerge->displayChoices();
+    QCoreApplication::processEvents();
+
+    // clear tmp_ tables
+    cleanuptmp();
+
+    // loop over selectedCSVs, find what CSV type they are, and import them one at a time
+    foreach (QString csv, selectedCSVs) {
+        ImportCSV importCSV;
+        QString csvType = importCSV.findType(csv);
+        if (csvType.isEmpty())
+            continue;
+        QString tablePrefix = "tmp_";
+        importCSV.extract(csvType, csv, tablePrefix);
+        // begin merging imported records
+        MergeTables mergeTables(tablePrefix, "", csvType);
+        // force importing new records overwriting old with no user interaction
+        mergeTables.setSilentMerge(true);
+        mergeTables.displayChoices();
+        QCoreApplication::processEvents();
+        cleanuptmp();
+    }
+
+    importingMsg->close();
+    importingMsg->deleteLater();
+    QMessageBox mbox;
+    mbox.setText("Importing complete.");
+    mbox.exec();
+}
+
+void ManageCSVs::importMergeQueue()
+{
+    cleanuptmp();
+
+    if (selectedCSVs.isEmpty())
+    {
+        QMessageBox mbox;
+        mbox.setText("Importing complete.");
+        mbox.exec();
+        return;
+    }
+    QString csv = selectedCSVs.first();
+    selectedCSVs.removeFirst();
+
+    ImportCSV importCSV;
+    QString csvType = importCSV.findType(csv);
+    if (!csvType.isEmpty())
+    {
+        QString tablePrefix = "tmp_";
+        importCSV.extract(csvType, csv, tablePrefix);
+        // begin merging imported records
+        QPointer<MergeTables> importedCSVMerge = new MergeTables(tablePrefix, "", csvType);
+        connect(importedCSVMerge,SIGNAL(finished()),this,SLOT(importMergeQueue()));
+        connect(importedCSVMerge,SIGNAL(canceled()),this,SLOT(importMergeQueue()));
+        importedCSVMerge->setAttribute(Qt::WA_DeleteOnClose);
+//        importedCSVMerge->setSilentMerge(true);
+        QCoreApplication::processEvents();
+        importedCSVMerge->displayChoices();
+    }
+    else
+    {
+        // finish working our way through the import queue
+        importMergeQueue();
+    }
 }
 
 void ManageCSVs::cleanuptmp()

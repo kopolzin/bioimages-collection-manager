@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -111,6 +111,11 @@ QSize MergeTables::sizeHint() const
     return QSize(640,240);
 }
 
+void MergeTables::setSilentMerge(bool state)
+{
+    silentMerge = state;
+}
+
 void MergeTables::displayChoices()
 {
     // first let's query the tables for conflicting records, storing the dcterms_identifier (or PK values, for determinations)
@@ -128,7 +133,11 @@ void MergeTables::displayChoices()
         emit loaded();
         emit finished();
         QMessageBox mbox;
-        if (updating)
+        if (silentMerge)
+        {
+            return;
+        }
+        else if (updating)
         {
             mbox.setText("Your local database is now up to date.");
             mbox.exec();
@@ -929,6 +938,13 @@ void MergeTables::findImageDiff()
         imageIDs.append(iDiffQry.value(20).toString());
     }
 
+    if (silentMerge)
+    {
+        newImageIDs = imageIDs;
+        imageIDs.clear();
+        return;
+    }
+
     QSqlQuery iNewQry;
     if (updating)
     {
@@ -954,7 +970,7 @@ void MergeTables::findImageDiff()
 
 void MergeTables::findAgentDiff()
 {
-    // Find differences between agents tables
+    // Find differing records between agents tables
     QSqlQuery aDiffQry;
     if (updating)
     {
@@ -977,6 +993,15 @@ void MergeTables::findAgentDiff()
         agentIDs.append(aDiffQry.value(0).toString());
     }
 
+    if (silentMerge)
+    {
+        newAgentIDs = agentIDs;
+        agentIDs.clear();
+        return;
+    }
+
+
+    // find records that exist in ageT but not age2T
     QSqlQuery aNewQry;
     if (updating)
     {
@@ -1028,6 +1053,13 @@ void MergeTables::findDeterminationDiff()
                     "tsnID = '" + dDiffQry.value(4).toString() + "' AND " +
                     "nameAccordingToID = '" + dDiffQry.value(5).toString() + "'"
                     );
+    }
+
+    if (silentMerge)
+    {
+        newDeterminationIDs = determinationIDs;
+        determinationIDs.clear();
+        return;
     }
 
     QSqlQuery dNewQry;
@@ -1137,6 +1169,13 @@ void MergeTables::findOrganismDiff()
         organismIDs.append(oDiffQry.value(0).toString());
     }
 
+    if (silentMerge)
+    {
+        newOrganismIDs = organismIDs;
+        organismIDs.clear();
+        return;
+    }
+
     QSqlQuery oNewQry;
     if (updating)
     {
@@ -1184,6 +1223,13 @@ void MergeTables::findSensuDiff()
     while (sDiffQry.next())
     {
         sensuIDs.append(sDiffQry.value(0).toString());
+    }
+
+    if (silentMerge)
+    {
+        newSensuIDs = sensuIDs;
+        sensuIDs.clear();
+        return;
     }
 
     QSqlQuery sNewQry;
@@ -1238,6 +1284,13 @@ void MergeTables::findTaxaDiff()
     while (tDiffQry.next())
     {
         taxaIDs.append(tDiffQry.value(1).toString());
+    }
+
+    if (silentMerge)
+    {
+        newTaxaIDs = taxaIDs;
+        taxaIDs.clear();
+        return;
     }
 
     QSqlQuery tNewQry;
@@ -1382,7 +1435,7 @@ void MergeTables::alterTables()
 {
     // move and remove tables as appropriate
     QStringList deleteTables;
-    if (!onlyTable.isEmpty())
+    if (!onlyTable.isEmpty() && !silentMerge)
     {
         if (onlyTable == "images")
             deleteTables << ima2T;

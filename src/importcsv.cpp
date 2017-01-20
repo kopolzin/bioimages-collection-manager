@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@ QStringList ImportCSV::parseCSV(const QString &line, int numFields, const QStrin
     return splitLine;
 }
 
-void ImportCSV::extractSingleColumn(const QString &CSVPath, const QString &table, const QString &field, bool identifierIsFileName, bool hasHeader, bool idInFirstColumn, const QString separator)
+bool ImportCSV::extractSingleColumn(const QString &CSVPath, const QString &table, const QString &field, bool identifierIsFileName, bool hasHeader, bool idInFirstColumn, const QString separator)
 {
     QFile file(CSVPath);
 
@@ -139,7 +139,7 @@ void ImportCSV::extractSingleColumn(const QString &CSVPath, const QString &table
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QTextStream in(&file);
@@ -211,7 +211,7 @@ void ImportCSV::extractSingleColumn(const QString &CSVPath, const QString &table
         }
         if (!query.exec()) {
             QMessageBox::critical(0, "", table + " insertion failed: " + query.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -219,10 +219,66 @@ void ImportCSV::extractSingleColumn(const QString &CSVPath, const QString &table
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
-void ImportCSV::extractAgents(const QString &CSVPath, const QString &table)
+QString ImportCSV::findType(const QString &CSVPath) {
+    QFile csv(CSVPath);
+
+    if(!csv.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Could not open " + CSVPath);
+        return "";
+    }
+
+    QTextStream in(&csv);
+    in.setCodec("UTF-8");
+    QString line = in.readLine();
+    // Strip quotes from the header line
+    line = line.replace("\"","");
+    QString type;
+    if (line == "dcterms_identifier|dc_contributor|iri|contactURL|morphbankUserID|dcterms_modified|type")
+        type = "agents";
+    else if (line == "dsw_identified|identifiedBy|dwc_dateIdentified|dwc_identificationRemarks|tsnID|nameAccordingToID|dcterms_modified|suppress")
+        type = "determinations";
+    else if (line == "dcterms_identifier|dwc_establishmentMeans|dcterms_modified|dwc_organismRemarks|dwc_collectionCode|dwc_catalogNumber|dwc_georeferenceRemarks|dwc_decimalLatitude|dwc_decimalLongitude|geo_alt|dwc_organismName|dwc_organismScope|cameo|notes|suppress")
+        type = "organisms";
+    else if (line == "dcterms_identifier|dc_creator|tcsSignature|dcterms_title|dc_publisher|dcterms_created|iri|dcterms_modified")
+        type = "sensu";
+    else if (line == "fileName|focalLength|dwc_georeferenceRemarks|dwc_decimalLatitude|dwc_decimalLongitude|geo_alt|exif_PixelXDimension|exif_PixelYDimension|dwc_occurrenceRemarks|dwc_geodeticDatum|dwc_coordinateUncertaintyInMeters|dwc_locality|dwc_countryCode|dwc_stateProvince|dwc_county|dwc_informationWithheld|dwc_dataGeneralizations|dwc_continent|geonamesAdmin|geonamesOther|dcterms_identifier|dcterms_modified|dcterms_title|dcterms_description|ac_caption|photographerCode|dcterms_created|photoshop_Credit|owner|dcterms_dateCopyrighted|dc_rights|xmpRights_Owner|ac_attributionLinkURL|ac_hasServiceAccessPoint|usageTermsIndex|view|xmp_Rating|foaf_depicts|suppress")
+        type = "images";
+    else if (line == "ubioID|dcterms_identifier|dwc_kingdom|dwc_class|dwc_order|dwc_family|dwc_genus|dwc_specificEpithet|dwc_infraspecificEpithet|dwc_taxonRank|dwc_scientificNameAuthorship|dwc_vernacularName|dcterms_modified")
+        type = "taxa";
+
+    return type;
+}
+
+bool ImportCSV::extract(const QString &csvType, const QString &csvPath, const QString &tablePrefix)
+{
+    QString table = tablePrefix + csvType;
+    if (csvType == "agents")
+        extractAgents(csvPath, table);
+    else if (csvType == "determinations")
+        extractDeterminations(csvPath, table);
+    else if (csvType == "images")
+        extractImageNames(csvPath, table);
+    else if (csvType == "organisms")
+        extractOrganisms(csvPath, table);
+    else if (csvType == "sensu")
+        extractSensu(csvPath, table);
+    else if (csvType == "taxa")
+        extractTaxa(csvPath, table);
+    else
+        return false;
+
+    return true;
+}
+
+bool ImportCSV::extractAgents(const QString &CSVPath, const QString &table)
 {
     QFile agentsCSV(CSVPath);
 
@@ -230,17 +286,19 @@ void ImportCSV::extractAgents(const QString &CSVPath, const QString &table)
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QTextStream in(&agentsCSV);
     in.setCodec("UTF-8");
-    QString line;
-    line = in.readLine();
+    QString line = in.readLine();
+    // Strip quotes from the header line
+    line = line.replace("\"","");
+    //          "dcterms_identifier"|"dc_contributor"|"iri"|"contactURL"|"morphbankUserID"|"dcterms_modified"|"type"
     if (line != "dcterms_identifier|dc_contributor|iri|contactURL|morphbankUserID|dcterms_modified|type")
     {
         qDebug() << "Error loading agents.csv. Header line does not match.";
-        return;
+        return false;
     }
 
     QList<Agent> extractedAgents;
@@ -292,7 +350,7 @@ void ImportCSV::extractAgents(const QString &CSVPath, const QString &table)
         query.addBindValue(agentDialog.getAgentType());
         if (!query.exec()) {
             QMessageBox::critical(0, "", "Agent insertion failed: " + query.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -300,10 +358,13 @@ void ImportCSV::extractAgents(const QString &CSVPath, const QString &table)
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
-void ImportCSV::extractDeterminations(const QString &CSVPath, const QString &table)
+bool ImportCSV::extractDeterminations(const QString &CSVPath, const QString &table)
 {
     QFile determCSV(CSVPath);
 
@@ -311,18 +372,18 @@ void ImportCSV::extractDeterminations(const QString &CSVPath, const QString &tab
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QList<Determination> determinations;
     QTextStream in(&determCSV);
     in.setCodec("UTF-8");
-    QString line;
-    line = in.readLine();
+    QString line = in.readLine();
+    line = line.replace("\"","");
     if (line != "dsw_identified|identifiedBy|dwc_dateIdentified|dwc_identificationRemarks|tsnID|nameAccordingToID|dcterms_modified|suppress")
     {
         qDebug() << "Error loading determinations.csv. Header line does not match.";
-        return;
+        return false;
     }
 
     do
@@ -376,7 +437,7 @@ void ImportCSV::extractDeterminations(const QString &CSVPath, const QString &tab
         query.addBindValue(d.suppress);
         if (!query.exec()) {
             QMessageBox::critical(0, "", "Determination insertion failed: " + query.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -384,10 +445,13 @@ void ImportCSV::extractDeterminations(const QString &CSVPath, const QString &tab
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
-void ImportCSV::extractOrganisms(const QString &CSVPath, const QString &table)
+bool ImportCSV::extractOrganisms(const QString &CSVPath, const QString &table)
 {
     QFile organismsCSV(CSVPath);
 
@@ -395,18 +459,18 @@ void ImportCSV::extractOrganisms(const QString &CSVPath, const QString &table)
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QList<Organism> organisms;
     QTextStream in(&organismsCSV);
     in.setCodec("UTF-8");
-    QString line;
-    line = in.readLine();
+    QString line = in.readLine();
+    line = line.replace("\"","");
     if (line != "dcterms_identifier|dwc_establishmentMeans|dcterms_modified|dwc_organismRemarks|dwc_collectionCode|dwc_catalogNumber|dwc_georeferenceRemarks|dwc_decimalLatitude|dwc_decimalLongitude|geo_alt|dwc_organismName|dwc_organismScope|cameo|notes|suppress")
     {
         qDebug() << "Error loading organisms.csv. Header line does not match.";
-        return;
+        return false;
     }
 
     do
@@ -478,7 +542,7 @@ void ImportCSV::extractOrganisms(const QString &CSVPath, const QString &table)
 
         if (!insert.exec()) {
             QMessageBox::critical(0, "", "Organism insertion failed: " + insert.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -486,10 +550,13 @@ void ImportCSV::extractOrganisms(const QString &CSVPath, const QString &table)
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
-void ImportCSV::extractSensu(const QString &CSVPath, const QString &table)
+bool ImportCSV::extractSensu(const QString &CSVPath, const QString &table)
 {
     QFile sensuCSV(CSVPath);
 
@@ -497,18 +564,18 @@ void ImportCSV::extractSensu(const QString &CSVPath, const QString &table)
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QList<Sensu> sensus;
     QTextStream in(&sensuCSV);
     in.setCodec("UTF-8");
-    QString line;
-    line = in.readLine();
+    QString line = in.readLine();
+    line = line.replace("\"","");
     if (line != "dcterms_identifier|dc_creator|tcsSignature|dcterms_title|dc_publisher|dcterms_created|iri|dcterms_modified")
     {
         qDebug() << "Error loading sensu.csv. Header line does not match.";
-        return;
+        return false;
     }
 
     do
@@ -559,7 +626,7 @@ void ImportCSV::extractSensu(const QString &CSVPath, const QString &table)
         query.addBindValue(s.lastModified);
         if (!query.exec()) {
             QMessageBox::critical(0, "", "Sensu insertion failed: " + query.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -567,7 +634,10 @@ void ImportCSV::extractSensu(const QString &CSVPath, const QString &table)
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
 QStringList ImportCSV::extractImageNames(const QString &CSVPath, const QString &table)
@@ -583,9 +653,8 @@ QStringList ImportCSV::extractImageNames(const QString &CSVPath, const QString &
 
     QTextStream in(&imagesCSV);
     in.setCodec("UTF-8");
-    QString line;
-
-    line = in.readLine();
+    QString line = in.readLine();
+    line = line.replace("\"","");
 
     if (line != "fileName|focalLength|dwc_georeferenceRemarks|dwc_decimalLatitude|dwc_decimalLongitude|geo_alt|exif_PixelXDimension|exif_PixelYDimension|dwc_occurrenceRemarks|dwc_geodeticDatum|dwc_coordinateUncertaintyInMeters|dwc_locality|dwc_countryCode|dwc_stateProvince|dwc_county|dwc_informationWithheld|dwc_dataGeneralizations|dwc_continent|geonamesAdmin|geonamesOther|dcterms_identifier|dcterms_modified|dcterms_title|dcterms_description|ac_caption|photographerCode|dcterms_created|photoshop_Credit|owner|dcterms_dateCopyrighted|dc_rights|xmpRights_Owner|ac_attributionLinkURL|ac_hasServiceAccessPoint|usageTermsIndex|view|xmp_Rating|foaf_depicts|suppress")
     {
@@ -997,7 +1066,7 @@ QStringList ImportCSV::extractImageNames(const QString &CSVPath, const QString &
     return imageNames;
 }
 
-void ImportCSV::extractTaxa(const QString &CSVPath, const QString &table)
+bool ImportCSV::extractTaxa(const QString &CSVPath, const QString &table)
 {
     QFile taxaCSV(CSVPath);
 
@@ -1005,18 +1074,18 @@ void ImportCSV::extractTaxa(const QString &CSVPath, const QString &table)
     {
         QMessageBox msgBox;
         msgBox.setText("Could not open " + CSVPath);
-        return;
+        return false;
     }
 
     QList<Taxa> taxa;
     QTextStream in(&taxaCSV);
     in.setCodec("UTF-8");
-    QString line;
-    line = in.readLine();
+    QString line = in.readLine();
+    line = line.replace("\"","");
     if (line != "ubioID|dcterms_identifier|dwc_kingdom|dwc_class|dwc_order|dwc_family|dwc_genus|dwc_specificEpithet|dwc_infraspecificEpithet|dwc_taxonRank|dwc_scientificNameAuthorship|dwc_vernacularName|dcterms_modified")
     {
         qDebug() << "Error loading names.csv. Header line does not match.";
-        return;
+        return false;
     }
 
     do
@@ -1081,7 +1150,7 @@ void ImportCSV::extractTaxa(const QString &CSVPath, const QString &table)
         query.addBindValue(t.lastModified);
         if (!query.exec()) {
             QMessageBox::critical(0, "", "Taxa insertion failed: " + query.lastError().text());
-            return;
+            return false;
         }
     }
 
@@ -1089,7 +1158,10 @@ void ImportCSV::extractTaxa(const QString &CSVPath, const QString &table)
     {
         qDebug() << "Problem committing changes to database. Data may be lost.";
         db.rollback();
+        return false;
     }
+
+    return true;
 }
 
 

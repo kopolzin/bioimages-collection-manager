@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,15 @@ class ImportCSV
 public:
     ImportCSV();
     ~ImportCSV();
-    void extractSensu(const QString &CSVPath, const QString &table);
-    void extractOrganisms(const QString &CSVPath, const QString &table);
-    void extractDeterminations(const QString &CSVPath, const QString &table);
-    void extractAgents(const QString &CSVPath, const QString &table);
+    bool extractSensu(const QString &CSVPath, const QString &table);
+    bool extractOrganisms(const QString &CSVPath, const QString &table);
+    bool extractDeterminations(const QString &CSVPath, const QString &table);
+    bool extractAgents(const QString &CSVPath, const QString &table);
     QStringList extractImageNames(const QString &CSVPath, const QString &table);
-    void extractTaxa(const QString &CSVPath, const QString &table);
-    void extractSingleColumn(const QString &CSVPath, const QString &table, const QString &field, bool identifierIsFileName, bool hasHeader, bool idInFirstColumn, const QString separator);
+    bool extractTaxa(const QString &CSVPath, const QString &table);
+    bool extractSingleColumn(const QString &CSVPath, const QString &table, const QString &field, bool identifierIsFileName, bool hasHeader, bool idInFirstColumn, const QString separator);
+    QString findType(const QString &CSVPath);
+    bool extract(const QString &csvType, const QString &csvPath, const QString &tablePrefix);
 private:
     QString modifiedNow();
     QStringList parseCSV(const QString &line, int numFields);

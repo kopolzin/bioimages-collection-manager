@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,7 @@ public:
     explicit MergeTables(const QString &firstPrefix, const QString &secondPrefix, const QString &oneTable, QWidget *parent = 0);
     ~MergeTables();
     void displayChoices();
+    void setSilentMerge(bool state);
 
 signals:
     void finished();
@@ -70,6 +71,7 @@ private:
     QString modifiedNow();
     bool updating;
     bool merging;
+    bool silentMerge;
     QString onlyTable;
 
     QString ageT;

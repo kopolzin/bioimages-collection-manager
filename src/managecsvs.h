@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2015 Ken Polzin
+// Copyright (c) 2014-2017 Ken Polzin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,7 @@ private slots:
     void on_selectCSVFolderButton_clicked();
     void on_selectTwoColumnCSV_clicked();
     void on_exportButton_clicked();
+    void importMergeQueue();
 
 private:
     Ui::ManageCSVs *ui;
@@ -83,6 +84,7 @@ private:
     QStringList firstFileNames;
     QStringList secondFileNames;
     QString dbLastPublished;
+    QStringList selectedCSVs;
     void resizeEvent(QResizeEvent *);
     void moveEvent(QMoveEvent *);
     void changeEvent(QEvent *event);
