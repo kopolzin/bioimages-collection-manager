@@ -56,6 +56,8 @@ private slots:
 
     void on_resetButton_clicked();
 
+    void on_convertITISButton_clicked();
+
 private:
     Ui::AdvancedOptions *ui;
     QStringList selectImages();
@@ -72,6 +74,7 @@ private:
     QString baseFolder;
     QString photoFolder;
     QStringList imagesToResize;
+    void convertITIS(const QString dbpath);
 };
 
 #endif // ADVANCEDOPTIONS_H
